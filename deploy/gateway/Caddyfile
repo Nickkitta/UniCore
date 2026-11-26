@@ -1,0 +1,11 @@
+{$UNICORE_API_DOMAIN} {
+  @api path /auth/v1/* /rest/v1/* /storage/v1/*
+  handle @api {
+    reverse_proxy https://{$UNICORE_PROJECT_HOST} {
+      header_up Host {$UNICORE_PROJECT_HOST}
+    }
+  }
+  handle {
+    respond 404
+  }
+}

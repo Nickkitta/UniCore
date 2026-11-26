@@ -1,0 +1,25 @@
+{
+  "cli": {
+    "version": ">= 16.0.0"
+  },
+  "build": {
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "environment": "preview",
+      "env": {
+        "EXPO_PUBLIC_DATA_MODE": "supabase",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://zusvsbnyfiltflvmywum.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_Xqg4iU1Dr5ajpH_CWta6vg_e3jL4Ygw",
+        "EXPO_PUBLIC_YANDEX_MAPS_API_KEY": "15e7895a-ad6f-488c-be1c-33aa4f39c39d"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "app-bundle"
+      }
+    }
+  }
+}

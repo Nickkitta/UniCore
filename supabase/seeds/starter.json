@@ -1,0 +1,385 @@
+{
+  "namespace": "unicore-starter-v1",
+  "users": [
+    {
+      "key": "sasha",
+      "email": "unicore.seed.sasha@example.com",
+      "name": "Александр Морозов",
+      "faculty": "ИМИТ",
+      "course": "3",
+      "group": "ПИ-231",
+      "bio": "Пишу приложения и собираю команду для новых проектов",
+      "interests": ["Учёба", "Карьера"],
+      "theme": "violet"
+    },
+    {
+      "key": "anna",
+      "email": "unicore.seed.anna@example.com",
+      "name": "Анна Лебедева",
+      "faculty": "ИМИТ",
+      "course": "2",
+      "group": "ИВТ-241",
+      "bio": "Люблю настольные игры и встречи с новыми людьми",
+      "interests": ["Карьера", "Спорт"],
+      "theme": "forest"
+    },
+    {
+      "key": "max",
+      "email": "unicore.seed.max@example.com",
+      "name": "Максим Орлов",
+      "faculty": "ИЕН",
+      "course": "3",
+      "group": "БИО-231",
+      "bio": "Играю в волейбол и бегаю по выходным",
+      "interests": ["Спорт", "Общение"],
+      "theme": "light"
+    },
+    {
+      "key": "maria",
+      "email": "unicore.seed.maria@example.com",
+      "name": "Мария Соколова",
+      "faculty": "ИФМК",
+      "course": "2",
+      "group": "ФИЛ-241",
+      "bio": "Рисую, снимаю и ищу интересные истории",
+      "interests": ["Общение", "Творчество"],
+      "theme": "violet"
+    },
+    {
+      "key": "ivan",
+      "email": "unicore.seed.ivan@example.com",
+      "name": "Иван Кузнецов",
+      "faculty": "ИМИТ",
+      "course": "4",
+      "group": "ПИ-221",
+      "bio": "Помогаю разбираться с программированием",
+      "interests": ["Творчество", "Учёба"],
+      "theme": "forest"
+    },
+    {
+      "key": "daria",
+      "email": "unicore.seed.daria@example.com",
+      "name": "Дарья Волкова",
+      "faculty": "ИЭУ",
+      "course": "2",
+      "group": "ЭК-241",
+      "bio": "Интересуюсь проектами, маркетингом и карьерой",
+      "interests": ["Учёба", "Карьера"],
+      "theme": "light"
+    },
+    {
+      "key": "nikita",
+      "email": "unicore.seed.nikita@example.com",
+      "name": "Никита Павлов",
+      "faculty": "ИМИТ",
+      "course": "1",
+      "group": "ИВТ-251",
+      "bio": "Учусь делать полезные приложения",
+      "interests": ["Карьера", "Спорт"],
+      "theme": "violet"
+    },
+    {
+      "key": "alina",
+      "email": "unicore.seed.alina@example.com",
+      "name": "Алина Попова",
+      "faculty": "ИФМК",
+      "course": "3",
+      "group": "ЖУР-231",
+      "bio": "Фотографирую город и людей",
+      "interests": ["Спорт", "Общение"],
+      "theme": "forest"
+    },
+    {
+      "key": "egor",
+      "email": "unicore.seed.egor@example.com",
+      "name": "Егор Васильев",
+      "faculty": "ИЕН",
+      "course": "2",
+      "group": "ХИМ-241",
+      "bio": "Люблю естественные науки и хорошие вопросы",
+      "interests": ["Общение", "Творчество"],
+      "theme": "light"
+    },
+    {
+      "key": "polina",
+      "email": "unicore.seed.polina@example.com",
+      "name": "Полина Смирнова",
+      "faculty": "ИЭУ",
+      "course": "3",
+      "group": "МЕН-231",
+      "bio": "Организую встречи и обмениваюсь идеями",
+      "interests": ["Творчество", "Учёба"],
+      "theme": "violet"
+    },
+    {
+      "key": "artem",
+      "email": "unicore.seed.artem@example.com",
+      "name": "Артём Фёдоров",
+      "faculty": "ИМИТ",
+      "course": "2",
+      "group": "ПИ-241",
+      "bio": "Изучаю дизайн интерфейсов",
+      "interests": ["Учёба", "Карьера"],
+      "theme": "forest"
+    },
+    {
+      "key": "sonya",
+      "email": "unicore.seed.sonya@example.com",
+      "name": "Софья Белова",
+      "faculty": "ИФМК",
+      "course": "1",
+      "group": "ЛИН-251",
+      "bio": "Практикую языки и люблю разговорные клубы",
+      "interests": ["Карьера", "Спорт"],
+      "theme": "light"
+    }
+  ],
+  "organizations": [
+    {
+      "key": "it",
+      "owner": "sasha",
+      "name": "Код и кофе",
+      "description": "Студенческое сообщество разработки и совместных проектов"
+    },
+    {
+      "key": "games",
+      "owner": "anna",
+      "name": "Свои за столом",
+      "description": "Настольные игры, знакомства и разговоры после пар"
+    },
+    {
+      "key": "sport",
+      "owner": "max",
+      "name": "В движении",
+      "description": "Любительский спорт и активные выходные"
+    },
+    {
+      "key": "art",
+      "owner": "maria",
+      "name": "Творческая среда",
+      "description": "Дизайн, фотография и встречи для обмена идеями"
+    }
+  ],
+  "events": [
+    {
+      "key": "project-night",
+      "host": "sasha",
+      "organization": "it",
+      "title": "Вечер студенческих проектов",
+      "category": "Карьера",
+      "description": "Покажем небольшие приложения, обменяемся обратной связью и найдём людей в команды — можно прийти только с идеей",
+      "location": "Коворкинг · общий зал",
+      "daysFromStart": 1,
+      "time": "18:00",
+      "capacity": 20,
+      "priceRub": 0
+    },
+    {
+      "key": "boardgames",
+      "host": "anna",
+      "organization": "games",
+      "title": "Настолки после пар",
+      "category": "Общение",
+      "description": "Разберём правила на месте, сыграем в несколько коротких игр и познакомимся — опыт не нужен",
+      "location": "Студенческое пространство",
+      "daysFromStart": 1,
+      "time": "18:00",
+      "capacity": 8,
+      "priceRub": 200
+    },
+    {
+      "key": "volleyball",
+      "host": "max",
+      "organization": "sport",
+      "title": "Волейбол для своих",
+      "category": "Спорт",
+      "description": "Собираем дружеские команды без отбора по уровню — возьми спортивную форму и воду",
+      "location": "Спортивный зал",
+      "daysFromStart": 2,
+      "time": "18:00",
+      "capacity": 12,
+      "priceRub": 0
+    },
+    {
+      "key": "sketch",
+      "host": "maria",
+      "organization": "art",
+      "title": "Рисуем город вместе",
+      "category": "Творчество",
+      "description": "Погуляем с блокнотами, выберем интересные детали и сделаем быстрые зарисовки — подойдут карандаши и ручки",
+      "location": "Набережная · у фонтана",
+      "daysFromStart": 2,
+      "time": "18:00",
+      "capacity": 10,
+      "priceRub": 0,
+      "coordinates": {
+        "latitude": 48.7066,
+        "longitude": 44.5193
+      }
+    },
+    {
+      "key": "react",
+      "host": "ivan",
+      "organization": null,
+      "title": "React без сложных слов",
+      "category": "Учёба",
+      "description": "На небольшом примере разберём компоненты, состояние и работу с формами — ноутбук пригодится, но не обязателен",
+      "location": "Учебный корпус · аудитория 204",
+      "daysFromStart": 3,
+      "time": "18:00",
+      "capacity": 15,
+      "priceRub": 0
+    },
+    {
+      "key": "resume",
+      "host": "daria",
+      "organization": null,
+      "title": "Разберём первое резюме",
+      "category": "Карьера",
+      "description": "Обсудим, как описать учебные проекты и опыт без стажировок — можно принести черновик или начать с нуля",
+      "location": "Онлайн · ссылка после записи",
+      "daysFromStart": 3,
+      "time": "18:00",
+      "capacity": 8,
+      "priceRub": 0
+    },
+    {
+      "key": "coffee",
+      "host": "nikita",
+      "organization": null,
+      "title": "Кофе и знакомство",
+      "category": "Общение",
+      "description": "Встречаемся после занятий, обсуждаем учёбу и идеи на выходные — каждый заказывает себе сам",
+      "location": "Кофейня у университета",
+      "daysFromStart": 4,
+      "time": "18:00",
+      "capacity": 6,
+      "priceRub": 0
+    },
+    {
+      "key": "photo-walk",
+      "host": "alina",
+      "organization": null,
+      "title": "Фотопрогулка на закате",
+      "category": "Творчество",
+      "description": "Поищем свет и интересные ракурсы, потом обменяемся кадрами — камера телефона отлично подойдёт",
+      "location": "Центральная набережная",
+      "daysFromStart": 4,
+      "time": "18:00",
+      "capacity": 10,
+      "priceRub": 0,
+      "coordinates": {
+        "latitude": 48.7066,
+        "longitude": 44.5193
+      }
+    },
+    {
+      "key": "quiz",
+      "host": "egor",
+      "organization": null,
+      "title": "Научный квиз",
+      "category": "Учёба",
+      "description": "Вопросы из разных областей, небольшие команды и обсуждение ответов — специальная подготовка не нужна",
+      "location": "Студенческое пространство",
+      "daysFromStart": 5,
+      "time": "18:00",
+      "capacity": 18,
+      "priceRub": 150
+    },
+    {
+      "key": "pitch",
+      "host": "polina",
+      "organization": null,
+      "title": "Идея за три минуты",
+      "category": "Карьера",
+      "description": "Потренируем короткие выступления и дадим друг другу обратную связь — можно рассказать о любом своём проекте",
+      "location": "Коворкинг · переговорная",
+      "daysFromStart": 6,
+      "time": "18:00",
+      "capacity": 10,
+      "priceRub": 0
+    },
+    {
+      "key": "interface",
+      "host": "artem",
+      "organization": null,
+      "title": "Разбор интерфейсов",
+      "category": "Творчество",
+      "description": "Возьмём привычные приложения и обсудим, что делает их удобными — приносите примеры и вопросы",
+      "location": "Онлайн · ссылка после записи",
+      "daysFromStart": 7,
+      "time": "18:00",
+      "capacity": 12,
+      "priceRub": 0
+    },
+    {
+      "key": "english",
+      "host": "sonya",
+      "organization": null,
+      "title": "Разговорный английский",
+      "category": "Учёба",
+      "description": "Поговорим о путешествиях, фильмах и студенческой жизни — главное желание общаться, ошибки не мешают",
+      "location": "Учебный корпус · аудитория 108",
+      "daysFromStart": 7,
+      "time": "18:00",
+      "capacity": 8,
+      "priceRub": 0
+    },
+    {
+      "key": "hack-day",
+      "host": "sasha",
+      "organization": "it",
+      "title": "Суббота маленьких приложений",
+      "category": "Карьера",
+      "description": "За несколько часов попробуем превратить небольшую идею в работающий прототип — команды соберём на месте",
+      "location": "Коворкинг · общий зал",
+      "daysFromStart": 9,
+      "time": "18:00",
+      "capacity": 24,
+      "priceRub": 0
+    },
+    {
+      "key": "strategy",
+      "host": "anna",
+      "organization": "games",
+      "title": "Вечер больших стратегий",
+      "category": "Общение",
+      "description": "Выберем одну настольную стратегию, разберём правила и сыграем полную партию — заложи три часа",
+      "location": "Игровая комната",
+      "daysFromStart": 10,
+      "time": "18:00",
+      "capacity": 6,
+      "priceRub": 350
+    },
+    {
+      "key": "run",
+      "host": "max",
+      "organization": "sport",
+      "title": "Лёгкий бег и завтрак",
+      "category": "Спорт",
+      "description": "Пробежим в разговорном темпе, сделаем разминку и при желании зайдём на завтрак — темп подстроим под группу",
+      "location": "Набережная · начало прогулочной зоны",
+      "daysFromStart": 12,
+      "time": "10:00",
+      "capacity": 12,
+      "priceRub": 0,
+      "coordinates": {
+        "latitude": 48.7066,
+        "longitude": 44.5193
+      }
+    },
+    {
+      "key": "poster",
+      "host": "maria",
+      "organization": "art",
+      "title": "Мастерская студенческого плаката",
+      "category": "Творчество",
+      "description": "Попробуем собрать афишу из текста и простых форм — материалы включены, готовую работу заберёшь с собой",
+      "location": "Творческая мастерская",
+      "daysFromStart": 14,
+      "time": "18:00",
+      "capacity": 10,
+      "priceRub": 500
+    }
+  ]
+}

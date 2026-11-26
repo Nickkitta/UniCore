@@ -32,9 +32,17 @@ yarn-error.*
 
 # local env files
 .env*.local
+.local/
 
 # typescript
 *.tsbuildinfo
+test-results/
+playwright-report/
+*.log
+preview/
+/public/connect.html
+/public/expo-qr.png
+.idea/
 
 # generated native folders
 /ios
