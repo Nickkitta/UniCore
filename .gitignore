@@ -40,10 +40,10 @@ test-results/
 playwright-report/
 *.log
 preview/
-/public/connect.html
-/public/expo-qr.png
+/apps/mobile/public/connect.html
+/apps/mobile/public/expo-qr.png
 .idea/
 
 # generated native folders
-/ios
-/android
+/apps/mobile/ios
+/apps/mobile/android

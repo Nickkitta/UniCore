@@ -1,0 +1,23 @@
+{
+  "name": "unicore",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "start": "npm --workspace @unicore/mobile run start --",
+    "check": "npm run check --workspaces --if-present && npm run test:supabase",
+    "test:supabase": "vitest run",
+    "seed": "node scripts/seed.mjs",
+    "seed:preview": "node scripts/seed.mjs --dry-run",
+    "seed:refresh": "node scripts/seed.mjs --refresh-dates"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.16",
+    "@supabase/supabase-js": "^2.119.0",
+    "prettier": "^3.10.1",
+    "vitest": "^5.1.0"
+  }
+}

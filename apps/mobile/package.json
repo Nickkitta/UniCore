@@ -1,5 +1,5 @@
 {
-  "name": "unicore",
+  "name": "@unicore/mobile",
   "version": "1.0.0",
   "main": "expo-router/entry",
   "dependencies": {
@@ -28,21 +28,16 @@
     "react-native-worklets": "0.13.0"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "^0.5.16",
     "@playwright/test": "^1.65.0",
     "@types/react": "~19.3.0",
     "eslint": "^9.39.5",
     "eslint-config-expo": "~58.0.4",
-    "prettier": "^3.10.1",
     "qrcode": "^1.5.4",
     "typescript": "~6.0.3",
     "vitest": "^5.1.0"
   },
   "scripts": {
     "build:apk": "npx --yes eas-cli@latest build --platform android --profile preview",
-    "seed": "node scripts/seed.mjs",
-    "seed:preview": "node scripts/seed.mjs --dry-run",
-    "seed:refresh": "node scripts/seed.mjs --refresh-dates",
     "start": "node scripts/start.mjs",
     "start:tunnel": "expo start --go --tunnel",
     "android": "expo start --android",

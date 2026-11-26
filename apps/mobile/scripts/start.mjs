@@ -1,5 +1,6 @@
 import os from 'node:os';
 import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { mkdir, writeFile } from 'node:fs/promises';
 import QRCode from 'qrcode';
@@ -46,7 +47,8 @@ if (host) {
 const child = spawn(
   process.execPath,
   [
-    fileURLToPath(new URL('../node_modules/expo/bin/cli', import.meta.url)),
+    // npm workspaces hoist expo to the repository root, so resolve it like Node does
+    createRequire(import.meta.url).resolve('expo/bin/cli'),
     'start',
     '--go',
     '--lan',

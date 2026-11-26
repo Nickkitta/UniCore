@@ -15,7 +15,7 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
   webServer: {
-    command: `node node_modules/expo/bin/cli start --localhost --port ${port}`,
+    command: `node "${require.resolve('expo/bin/cli')}" start --localhost --port ${port}`,
     env: { EXPO_PUBLIC_DATA_MODE: 'mock' },
     url: baseURL,
     reuseExistingServer: false,
