@@ -4,6 +4,8 @@
 
 Настройка базы, первого аккаунта, регистрации с письмами и описание прав доступа — в [supabase/README.md](supabase/README.md)
 
+Идёт переход с Supabase на собственный сервер — этапы, задачи, прогресс и способы проверки в [docs/backend-migration.md](docs/backend-migration.md)
+
 ## Быстрый запуск на Android
 
 Node.js 22 LTS и npm. Проект проверен с Node.js 22.22.3.

@@ -34,6 +34,10 @@ Run lint and typecheck before declaring any task done.
 Use EAS to build, sign, and submit the app in the cloud (`eas build`, `eas submit`) and to ship over-the-air updates (`eas update`) — no local Xcode or Android Studio required. Run EAS CLI as `bunx eas-cli <command>` in Bun projects, or `npx eas-cli@latest <command>` otherwise; substitute that for bare `eas` in docs examples.
 Docs: https://docs.expo.dev/eas/index.md
 
+## Backend migration (in progress)
+
+The project is moving from Supabase to its own TypeScript server in a monorepo (`apps/mobile`, `apps/api`, `packages/shared`). Stages, tasks, progress and the verification step for each task live in `docs/backend-migration.md`. Read it before touching backend or data-layer code. Tick a task only after its verification passes, then update the stage counter in the progress table and add a journal entry.
+
 ## Rules
 
 - If `ios/` and `android/` directories do not exist, they are generated (Continuous Native Generation). Never create or edit them by hand — configure native behavior in `app.json` and config plugins.

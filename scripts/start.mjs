@@ -6,7 +6,10 @@ import QRCode from 'qrcode';
 
 // VPN adapters can otherwise become Expo's advertised host. Prefer a physical LAN.
 const candidates = Object.entries(os.networkInterfaces())
-  .filter(([name]) => !/vpn|tun|virtual|vmware|wsl|docker|vbox/i.test(name))
+  .filter(
+    ([name]) =>
+      !/vpn|tun|virtual|vmware|wsl|docker|vbox|vethernet|hyper-v|default switch/i.test(name),
+  )
   .flatMap(([name, addresses]) => (addresses || []).map((address) => ({ name, ...address })))
   .filter(
     (a) =>
