@@ -1,4 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Res } from '@nestjs/common';
+import type { Response } from 'express';
 import { HealthService } from './health.service.js';
 
 @Controller('health')
@@ -7,8 +8,14 @@ export class HealthController {
   // decorator metadata, so the health e2e test also guards the build setup.
   constructor(private readonly health: HealthService) {}
 
+  /**
+   * `{ ok: true }`, or 503 with `{ ok: false }` when the database is down. The status is set
+   * here rather than thrown, so the response keeps this shape and not the error format.
+   */
   @Get()
-  check() {
-    return this.health.check();
+  async check(@Res({ passthrough: true }) response: Response) {
+    const ok = await this.health.isDatabaseUp();
+    if (!ok) response.status(HttpStatus.SERVICE_UNAVAILABLE);
+    return { ok };
   }
 }

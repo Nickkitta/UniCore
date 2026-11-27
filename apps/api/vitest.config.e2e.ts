@@ -10,6 +10,9 @@ export default defineConfig({
     env: {
       NODE_ENV: 'test',
       JWT_SECRET: 'test-secret-that-is-at-least-32-characters',
+      // Each app gets a fresh in-memory database with the migrations applied.
+      PGLITE_DIR: 'memory://',
+      DATABASE_URL: '',
     },
   },
 });

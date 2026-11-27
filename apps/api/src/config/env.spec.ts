@@ -19,7 +19,22 @@ describe('envSchema', () => {
       JWT_SECRET: secret,
       CORS_ORIGINS: ['http://localhost:8081'],
       TRUST_PROXY: false,
+      PGLITE_DIR: '.local/pgdata',
     });
+  });
+
+  it('accepts only a Postgres DATABASE_URL', () => {
+    const url = 'postgres://unicore:secret@localhost:5432/unicore';
+    expect(envSchema.parse({ JWT_SECRET: secret, DATABASE_URL: url }).DATABASE_URL).toBe(url);
+    expect(
+      envSchema.safeParse({ JWT_SECRET: secret, DATABASE_URL: 'postgresql://localhost/unicore' })
+        .success,
+    ).toBe(true);
+    expect(
+      envSchema.safeParse({ JWT_SECRET: secret, DATABASE_URL: 'mysql://localhost/unicore' })
+        .success,
+    ).toBe(false);
+    expect(envSchema.parse({ JWT_SECRET: secret, DATABASE_URL: '' }).DATABASE_URL).toBeUndefined();
   });
 
   it('parses the port and the list of origins', () => {

@@ -1,0 +1,3206 @@
+{
+  "type": "base",
+  "version": "10",
+  "dialect": "postgres",
+  "id": "a242f924-7fbd-42ce-a43c-37a516c17a90",
+  "prevIds": [
+    "00000000-0000-0000-0000-000000000000"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "activities"
+      ],
+      "writes": [
+        "s|tbl|public.activities",
+        "n|tbl|public.activities",
+        "e|tbl|public.activities",
+        "n|rel|public.activities",
+        "n|type|public.activities",
+        "n|rel|public.activities_pkey",
+        "n|rel|public.activities_seed_key_key"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "admins"
+      ],
+      "writes": [
+        "s|tbl|public.admins",
+        "n|tbl|public.admins",
+        "e|tbl|public.admins",
+        "n|rel|public.admins",
+        "n|type|public.admins",
+        "n|rel|public.admins_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "email_tokens"
+      ],
+      "writes": [
+        "s|tbl|public.email_tokens",
+        "n|tbl|public.email_tokens",
+        "e|tbl|public.email_tokens",
+        "n|rel|public.email_tokens",
+        "n|type|public.email_tokens",
+        "n|rel|public.email_tokens_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "exclusions"
+      ],
+      "writes": [
+        "s|tbl|public.exclusions",
+        "n|tbl|public.exclusions",
+        "e|tbl|public.exclusions",
+        "n|rel|public.exclusions",
+        "n|type|public.exclusions",
+        "n|rel|public.exclusions_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "groups"
+      ],
+      "writes": [
+        "s|tbl|public.groups",
+        "n|tbl|public.groups",
+        "e|tbl|public.groups",
+        "n|rel|public.groups",
+        "n|type|public.groups",
+        "n|rel|public.groups_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "messages"
+      ],
+      "writes": [
+        "s|tbl|public.messages",
+        "n|tbl|public.messages",
+        "e|tbl|public.messages",
+        "n|rel|public.messages",
+        "n|type|public.messages",
+        "n|rel|public.messages_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "organizations"
+      ],
+      "writes": [
+        "s|tbl|public.organizations",
+        "n|tbl|public.organizations",
+        "e|tbl|public.organizations",
+        "n|rel|public.organizations",
+        "n|type|public.organizations",
+        "n|rel|public.organizations_pkey",
+        "n|rel|public.organizations_seed_key_key"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "participants"
+      ],
+      "writes": [
+        "s|tbl|public.participants",
+        "n|tbl|public.participants",
+        "e|tbl|public.participants",
+        "n|rel|public.participants",
+        "n|type|public.participants",
+        "n|rel|public.participants_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "partner_codes"
+      ],
+      "writes": [
+        "s|tbl|public.partner_codes",
+        "n|tbl|public.partner_codes",
+        "e|tbl|public.partner_codes",
+        "n|rel|public.partner_codes",
+        "n|type|public.partner_codes",
+        "n|rel|public.partner_codes_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "photos"
+      ],
+      "writes": [
+        "s|tbl|public.photos",
+        "n|tbl|public.photos",
+        "e|tbl|public.photos",
+        "n|rel|public.photos",
+        "n|type|public.photos",
+        "n|rel|public.photos_pkey",
+        "n|rel|public.photos_activity_position_key"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "profiles"
+      ],
+      "writes": [
+        "s|tbl|public.profiles",
+        "n|tbl|public.profiles",
+        "e|tbl|public.profiles",
+        "n|rel|public.profiles",
+        "n|type|public.profiles",
+        "n|rel|public.profiles_pkey",
+        "n|rel|public.profiles_seed_key_key"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "refresh_tokens"
+      ],
+      "writes": [
+        "s|tbl|public.refresh_tokens",
+        "n|tbl|public.refresh_tokens",
+        "e|tbl|public.refresh_tokens",
+        "n|rel|public.refresh_tokens",
+        "n|type|public.refresh_tokens",
+        "n|rel|public.refresh_tokens_pkey",
+        "n|rel|public.refresh_tokens_token_hash_key"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "saved"
+      ],
+      "writes": [
+        "s|tbl|public.saved",
+        "n|tbl|public.saved",
+        "e|tbl|public.saved",
+        "n|rel|public.saved",
+        "n|type|public.saved",
+        "n|rel|public.saved_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "users"
+      ],
+      "writes": [
+        "s|tbl|public.users",
+        "n|tbl|public.users",
+        "e|tbl|public.users",
+        "n|rel|public.users",
+        "n|type|public.users",
+        "n|rel|public.users_pkey",
+        "n|rel|public.users_email_key"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "activities",
+        "activities_feed_idx"
+      ],
+      "writes": [
+        "s|idx|public.activities_feed_idx",
+        "n|idx|public.activities_feed_idx",
+        "e|idx|public.activities_feed_idx",
+        "n|rel|public.activities_feed_idx"
+      ],
+      "reads": [
+        "n|tbl|public.activities",
+        "n|sch|public",
+        "n|col|public.activities.created_at",
+        "n|col|public.activities.id"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "activities",
+        "activities_host_idx"
+      ],
+      "writes": [
+        "s|idx|public.activities_host_idx",
+        "n|idx|public.activities_host_idx",
+        "e|idx|public.activities_host_idx",
+        "n|rel|public.activities_host_idx"
+      ],
+      "reads": [
+        "n|tbl|public.activities",
+        "n|sch|public",
+        "n|col|public.activities.host_id"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "activities",
+        "activities_organization_idx"
+      ],
+      "writes": [
+        "s|idx|public.activities_organization_idx",
+        "n|idx|public.activities_organization_idx",
+        "e|idx|public.activities_organization_idx",
+        "n|rel|public.activities_organization_idx"
+      ],
+      "reads": [
+        "n|tbl|public.activities",
+        "n|sch|public",
+        "n|col|public.activities.organization_id"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "activities",
+        "activities_starts_at_idx"
+      ],
+      "writes": [
+        "s|idx|public.activities_starts_at_idx",
+        "n|idx|public.activities_starts_at_idx",
+        "e|idx|public.activities_starts_at_idx",
+        "n|rel|public.activities_starts_at_idx"
+      ],
+      "reads": [
+        "n|tbl|public.activities",
+        "n|sch|public",
+        "n|col|public.activities.starts_at"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "email_tokens",
+        "email_tokens_user_recent_idx"
+      ],
+      "writes": [
+        "s|idx|public.email_tokens_user_recent_idx",
+        "n|idx|public.email_tokens_user_recent_idx",
+        "e|idx|public.email_tokens_user_recent_idx",
+        "n|rel|public.email_tokens_user_recent_idx"
+      ],
+      "reads": [
+        "n|tbl|public.email_tokens",
+        "n|sch|public",
+        "n|col|public.email_tokens.user_id",
+        "n|col|public.email_tokens.created_at"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "exclusions",
+        "exclusions_user_idx"
+      ],
+      "writes": [
+        "s|idx|public.exclusions_user_idx",
+        "n|idx|public.exclusions_user_idx",
+        "e|idx|public.exclusions_user_idx",
+        "n|rel|public.exclusions_user_idx"
+      ],
+      "reads": [
+        "n|tbl|public.exclusions",
+        "n|sch|public",
+        "n|col|public.exclusions.user_id"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "messages",
+        "messages_room_recent_idx"
+      ],
+      "writes": [
+        "s|idx|public.messages_room_recent_idx",
+        "n|idx|public.messages_room_recent_idx",
+        "e|idx|public.messages_room_recent_idx",
+        "n|rel|public.messages_room_recent_idx"
+      ],
+      "reads": [
+        "n|tbl|public.messages",
+        "n|sch|public",
+        "n|col|public.messages.activity_id",
+        "n|col|public.messages.sent_at",
+        "n|col|public.messages.id"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "organizations",
+        "organizations_owner_idx"
+      ],
+      "writes": [
+        "s|idx|public.organizations_owner_idx",
+        "n|idx|public.organizations_owner_idx",
+        "e|idx|public.organizations_owner_idx",
+        "n|rel|public.organizations_owner_idx"
+      ],
+      "reads": [
+        "n|tbl|public.organizations",
+        "n|sch|public",
+        "n|col|public.organizations.owner_id"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "participants",
+        "participants_user_idx"
+      ],
+      "writes": [
+        "s|idx|public.participants_user_idx",
+        "n|idx|public.participants_user_idx",
+        "e|idx|public.participants_user_idx",
+        "n|rel|public.participants_user_idx"
+      ],
+      "reads": [
+        "n|tbl|public.participants",
+        "n|sch|public",
+        "n|col|public.participants.user_id"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "photos",
+        "photos_unattached_idx"
+      ],
+      "writes": [
+        "s|idx|public.photos_unattached_idx",
+        "n|idx|public.photos_unattached_idx",
+        "e|idx|public.photos_unattached_idx",
+        "n|rel|public.photos_unattached_idx"
+      ],
+      "reads": [
+        "n|tbl|public.photos",
+        "n|sch|public",
+        "n|col|public.photos.created_at"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "refresh_tokens",
+        "refresh_tokens_family_idx"
+      ],
+      "writes": [
+        "s|idx|public.refresh_tokens_family_idx",
+        "n|idx|public.refresh_tokens_family_idx",
+        "e|idx|public.refresh_tokens_family_idx",
+        "n|rel|public.refresh_tokens_family_idx"
+      ],
+      "reads": [
+        "n|tbl|public.refresh_tokens",
+        "n|sch|public",
+        "n|col|public.refresh_tokens.family_id"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "refresh_tokens",
+        "refresh_tokens_user_idx"
+      ],
+      "writes": [
+        "s|idx|public.refresh_tokens_user_idx",
+        "n|idx|public.refresh_tokens_user_idx",
+        "e|idx|public.refresh_tokens_user_idx",
+        "n|rel|public.refresh_tokens_user_idx"
+      ],
+      "reads": [
+        "n|tbl|public.refresh_tokens",
+        "n|sch|public",
+        "n|col|public.refresh_tokens.user_id"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "saved",
+        "saved_user_idx"
+      ],
+      "writes": [
+        "s|idx|public.saved_user_idx",
+        "n|idx|public.saved_user_idx",
+        "e|idx|public.saved_user_idx",
+        "n|rel|public.saved_user_idx"
+      ],
+      "reads": [
+        "n|tbl|public.saved",
+        "n|sch|public",
+        "n|col|public.saved.user_id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "activities"
+      ],
+      "writes": [
+        "s|fk|public.activities.activities_host_id_profiles_id_fkey",
+        "n|fk|public.activities.activities_host_id_profiles_id_fkey",
+        "e|fk|public.activities.activities_host_id_profiles_id_fkey",
+        "n|con|public.activities.activities_host_id_profiles_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.activities",
+        "n|sch|public",
+        "n|tbl|public.profiles",
+        "n|sch|public",
+        "n|col|public.activities.host_id",
+        "n|col|public.profiles.id",
+        "e|uniqueness|public.profiles.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "activities"
+      ],
+      "writes": [
+        "s|fk|public.activities.activities_organization_id_organizations_id_fkey",
+        "n|fk|public.activities.activities_organization_id_organizations_id_fkey",
+        "e|fk|public.activities.activities_organization_id_organizations_id_fkey",
+        "n|con|public.activities.activities_organization_id_organizations_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.activities",
+        "n|sch|public",
+        "n|tbl|public.organizations",
+        "n|sch|public",
+        "n|col|public.activities.organization_id",
+        "n|col|public.organizations.id",
+        "e|uniqueness|public.organizations.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "admins"
+      ],
+      "writes": [
+        "s|fk|public.admins.admins_user_id_users_id_fkey",
+        "n|fk|public.admins.admins_user_id_users_id_fkey",
+        "e|fk|public.admins.admins_user_id_users_id_fkey",
+        "n|con|public.admins.admins_user_id_users_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.admins",
+        "n|sch|public",
+        "n|tbl|public.users",
+        "n|sch|public",
+        "n|col|public.admins.user_id",
+        "n|col|public.users.id",
+        "e|uniqueness|public.users.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "email_tokens"
+      ],
+      "writes": [
+        "s|fk|public.email_tokens.email_tokens_user_id_users_id_fkey",
+        "n|fk|public.email_tokens.email_tokens_user_id_users_id_fkey",
+        "e|fk|public.email_tokens.email_tokens_user_id_users_id_fkey",
+        "n|con|public.email_tokens.email_tokens_user_id_users_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.email_tokens",
+        "n|sch|public",
+        "n|tbl|public.users",
+        "n|sch|public",
+        "n|col|public.email_tokens.user_id",
+        "n|col|public.users.id",
+        "e|uniqueness|public.users.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "exclusions"
+      ],
+      "writes": [
+        "s|fk|public.exclusions.exclusions_activity_id_activities_id_fkey",
+        "n|fk|public.exclusions.exclusions_activity_id_activities_id_fkey",
+        "e|fk|public.exclusions.exclusions_activity_id_activities_id_fkey",
+        "n|con|public.exclusions.exclusions_activity_id_activities_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.exclusions",
+        "n|sch|public",
+        "n|tbl|public.activities",
+        "n|sch|public",
+        "n|col|public.exclusions.activity_id",
+        "n|col|public.activities.id",
+        "e|uniqueness|public.activities.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "exclusions"
+      ],
+      "writes": [
+        "s|fk|public.exclusions.exclusions_user_id_profiles_id_fkey",
+        "n|fk|public.exclusions.exclusions_user_id_profiles_id_fkey",
+        "e|fk|public.exclusions.exclusions_user_id_profiles_id_fkey",
+        "n|con|public.exclusions.exclusions_user_id_profiles_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.exclusions",
+        "n|sch|public",
+        "n|tbl|public.profiles",
+        "n|sch|public",
+        "n|col|public.exclusions.user_id",
+        "n|col|public.profiles.id",
+        "e|uniqueness|public.profiles.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "messages"
+      ],
+      "writes": [
+        "s|fk|public.messages.messages_activity_id_activities_id_fkey",
+        "n|fk|public.messages.messages_activity_id_activities_id_fkey",
+        "e|fk|public.messages.messages_activity_id_activities_id_fkey",
+        "n|con|public.messages.messages_activity_id_activities_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.messages",
+        "n|sch|public",
+        "n|tbl|public.activities",
+        "n|sch|public",
+        "n|col|public.messages.activity_id",
+        "n|col|public.activities.id",
+        "e|uniqueness|public.activities.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "messages"
+      ],
+      "writes": [
+        "s|fk|public.messages.messages_author_id_profiles_id_fkey",
+        "n|fk|public.messages.messages_author_id_profiles_id_fkey",
+        "e|fk|public.messages.messages_author_id_profiles_id_fkey",
+        "n|con|public.messages.messages_author_id_profiles_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.messages",
+        "n|sch|public",
+        "n|tbl|public.profiles",
+        "n|sch|public",
+        "n|col|public.messages.author_id",
+        "n|col|public.profiles.id",
+        "e|uniqueness|public.profiles.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "organizations"
+      ],
+      "writes": [
+        "s|fk|public.organizations.organizations_owner_id_profiles_id_fkey",
+        "n|fk|public.organizations.organizations_owner_id_profiles_id_fkey",
+        "e|fk|public.organizations.organizations_owner_id_profiles_id_fkey",
+        "n|con|public.organizations.organizations_owner_id_profiles_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.organizations",
+        "n|sch|public",
+        "n|tbl|public.profiles",
+        "n|sch|public",
+        "n|col|public.organizations.owner_id",
+        "n|col|public.profiles.id",
+        "e|uniqueness|public.profiles.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "participants"
+      ],
+      "writes": [
+        "s|fk|public.participants.participants_activity_id_activities_id_fkey",
+        "n|fk|public.participants.participants_activity_id_activities_id_fkey",
+        "e|fk|public.participants.participants_activity_id_activities_id_fkey",
+        "n|con|public.participants.participants_activity_id_activities_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.participants",
+        "n|sch|public",
+        "n|tbl|public.activities",
+        "n|sch|public",
+        "n|col|public.participants.activity_id",
+        "n|col|public.activities.id",
+        "e|uniqueness|public.activities.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "participants"
+      ],
+      "writes": [
+        "s|fk|public.participants.participants_user_id_profiles_id_fkey",
+        "n|fk|public.participants.participants_user_id_profiles_id_fkey",
+        "e|fk|public.participants.participants_user_id_profiles_id_fkey",
+        "n|con|public.participants.participants_user_id_profiles_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.participants",
+        "n|sch|public",
+        "n|tbl|public.profiles",
+        "n|sch|public",
+        "n|col|public.participants.user_id",
+        "n|col|public.profiles.id",
+        "e|uniqueness|public.profiles.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "partner_codes"
+      ],
+      "writes": [
+        "s|fk|public.partner_codes.partner_codes_issued_by_users_id_fkey",
+        "n|fk|public.partner_codes.partner_codes_issued_by_users_id_fkey",
+        "e|fk|public.partner_codes.partner_codes_issued_by_users_id_fkey",
+        "n|con|public.partner_codes.partner_codes_issued_by_users_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.partner_codes",
+        "n|sch|public",
+        "n|tbl|public.users",
+        "n|sch|public",
+        "n|col|public.partner_codes.issued_by",
+        "n|col|public.users.id",
+        "e|uniqueness|public.users.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "partner_codes"
+      ],
+      "writes": [
+        "s|fk|public.partner_codes.partner_codes_used_by_users_id_fkey",
+        "n|fk|public.partner_codes.partner_codes_used_by_users_id_fkey",
+        "e|fk|public.partner_codes.partner_codes_used_by_users_id_fkey",
+        "n|con|public.partner_codes.partner_codes_used_by_users_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.partner_codes",
+        "n|sch|public",
+        "n|tbl|public.users",
+        "n|sch|public",
+        "n|col|public.partner_codes.used_by",
+        "n|col|public.users.id",
+        "e|uniqueness|public.users.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "photos"
+      ],
+      "writes": [
+        "s|fk|public.photos.photos_owner_id_profiles_id_fkey",
+        "n|fk|public.photos.photos_owner_id_profiles_id_fkey",
+        "e|fk|public.photos.photos_owner_id_profiles_id_fkey",
+        "n|con|public.photos.photos_owner_id_profiles_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.photos",
+        "n|sch|public",
+        "n|tbl|public.profiles",
+        "n|sch|public",
+        "n|col|public.photos.owner_id",
+        "n|col|public.profiles.id",
+        "e|uniqueness|public.profiles.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "photos"
+      ],
+      "writes": [
+        "s|fk|public.photos.photos_activity_id_activities_id_fkey",
+        "n|fk|public.photos.photos_activity_id_activities_id_fkey",
+        "e|fk|public.photos.photos_activity_id_activities_id_fkey",
+        "n|con|public.photos.photos_activity_id_activities_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.photos",
+        "n|sch|public",
+        "n|tbl|public.activities",
+        "n|sch|public",
+        "n|col|public.photos.activity_id",
+        "n|col|public.activities.id",
+        "e|uniqueness|public.activities.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "profiles"
+      ],
+      "writes": [
+        "s|fk|public.profiles.profiles_id_users_id_fkey",
+        "n|fk|public.profiles.profiles_id_users_id_fkey",
+        "e|fk|public.profiles.profiles_id_users_id_fkey",
+        "n|con|public.profiles.profiles_id_users_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.profiles",
+        "n|sch|public",
+        "n|tbl|public.users",
+        "n|sch|public",
+        "n|col|public.profiles.id",
+        "n|col|public.users.id",
+        "e|uniqueness|public.users.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "refresh_tokens"
+      ],
+      "writes": [
+        "s|fk|public.refresh_tokens.refresh_tokens_user_id_users_id_fkey",
+        "n|fk|public.refresh_tokens.refresh_tokens_user_id_users_id_fkey",
+        "e|fk|public.refresh_tokens.refresh_tokens_user_id_users_id_fkey",
+        "n|con|public.refresh_tokens.refresh_tokens_user_id_users_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.refresh_tokens",
+        "n|sch|public",
+        "n|tbl|public.users",
+        "n|sch|public",
+        "n|col|public.refresh_tokens.user_id",
+        "n|col|public.users.id",
+        "e|uniqueness|public.users.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "saved"
+      ],
+      "writes": [
+        "s|fk|public.saved.saved_activity_id_activities_id_fkey",
+        "n|fk|public.saved.saved_activity_id_activities_id_fkey",
+        "e|fk|public.saved.saved_activity_id_activities_id_fkey",
+        "n|con|public.saved.saved_activity_id_activities_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.saved",
+        "n|sch|public",
+        "n|tbl|public.activities",
+        "n|sch|public",
+        "n|col|public.saved.activity_id",
+        "n|col|public.activities.id",
+        "e|uniqueness|public.activities.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "saved"
+      ],
+      "writes": [
+        "s|fk|public.saved.saved_user_id_profiles_id_fkey",
+        "n|fk|public.saved.saved_user_id_profiles_id_fkey",
+        "e|fk|public.saved.saved_user_id_profiles_id_fkey",
+        "n|con|public.saved.saved_user_id_profiles_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.saved",
+        "n|sch|public",
+        "n|tbl|public.profiles",
+        "n|sch|public",
+        "n|col|public.saved.user_id",
+        "n|col|public.profiles.id",
+        "e|uniqueness|public.profiles.id"
+      ]
+    }
+  ],
+  "ddl": [
+    {
+      "schema": "public",
+      "name": "activities",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "admins",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "email_tokens",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "exclusions",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "groups",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "messages",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "organizations",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "participants",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "partner_codes",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "photos",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "profiles",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "refresh_tokens",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "saved",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "users",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "host_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "organization_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "kind",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'event'",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "title",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "description",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "category",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "starts_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "location",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "capacity",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "price_rub",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "0",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "latitude",
+      "type": "double precision",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "longitude",
+      "type": "double precision",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "tags",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 1,
+      "default": "'{}'",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "featured",
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "false",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "partner_badge",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "seed_key",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "admins",
+      "name": "user_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "admins",
+      "name": "granted_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "email_tokens",
+      "name": "token_hash",
+      "type": "bytea",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "email_tokens",
+      "name": "user_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "email_tokens",
+      "name": "purpose",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "email_tokens",
+      "name": "expires_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "email_tokens",
+      "name": "used_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "email_tokens",
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "exclusions",
+      "name": "activity_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "exclusions",
+      "name": "user_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "exclusions",
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "groups",
+      "name": "faculty",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "groups",
+      "name": "group_name",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "messages",
+      "name": "id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "messages",
+      "name": "activity_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "messages",
+      "name": "author_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "messages",
+      "name": "body",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "messages",
+      "name": "sent_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "organizations",
+      "name": "id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "organizations",
+      "name": "owner_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "organizations",
+      "name": "name",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "organizations",
+      "name": "description",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "''",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "organizations",
+      "name": "seed_key",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "organizations",
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "participants",
+      "name": "activity_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "participants",
+      "name": "user_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "participants",
+      "name": "is_cohost",
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "false",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "participants",
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "partner_codes",
+      "name": "code_hash",
+      "type": "bytea",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "partner_codes",
+      "name": "issued_by",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "partner_codes",
+      "name": "used_by",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "partner_codes",
+      "name": "expires_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "partner_codes",
+      "name": "used_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "photos",
+      "name": "id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "photos",
+      "name": "owner_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "photos",
+      "name": "activity_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "photos",
+      "name": "position",
+      "type": "smallint",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "photos",
+      "name": "size_bytes",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "photos",
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "account_kind",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'student'",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "name",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "faculty",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "''",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "course",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "''",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "group_name",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "''",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "bio",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "''",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "interests",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 1,
+      "default": "'{}'",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "theme",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'violet'",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "company",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "''",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "company_about",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "''",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "seed_key",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "refresh_tokens",
+      "name": "id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "refresh_tokens",
+      "name": "user_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "refresh_tokens",
+      "name": "family_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "refresh_tokens",
+      "name": "token_hash",
+      "type": "bytea",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "refresh_tokens",
+      "name": "expires_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "refresh_tokens",
+      "name": "used_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "refresh_tokens",
+      "name": "revoked_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "refresh_tokens",
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "saved",
+      "name": "activity_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "saved",
+      "name": "user_id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "saved",
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "id",
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "email",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "password_hash",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "email_verified_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_feed_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "created_at",
+          "isExpression": false,
+          "asc": false,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_host_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "host_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_organization_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "organization_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_starts_at_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "starts_at",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "email_tokens",
+      "name": "email_tokens_user_recent_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "user_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "created_at",
+          "isExpression": false,
+          "asc": false,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "exclusions",
+      "name": "exclusions_user_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "user_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "messages",
+      "name": "messages_room_recent_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "activity_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "sent_at",
+          "isExpression": false,
+          "asc": false,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "id",
+          "isExpression": false,
+          "asc": false,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "organizations",
+      "name": "organizations_owner_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "owner_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "participants",
+      "name": "participants_user_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "user_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "photos",
+      "name": "photos_unattached_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "created_at",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": "\"activity_id\" is null",
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "refresh_tokens",
+      "name": "refresh_tokens_family_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "family_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "refresh_tokens",
+      "name": "refresh_tokens_user_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "user_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "saved",
+      "name": "saved_user_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "user_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_host_id_profiles_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "host_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "profiles",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_organization_id_organizations_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "organization_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "organizations",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "admins",
+      "name": "admins_user_id_users_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "email_tokens",
+      "name": "email_tokens_user_id_users_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "exclusions",
+      "name": "exclusions_activity_id_activities_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "activity_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "activities",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "exclusions",
+      "name": "exclusions_user_id_profiles_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "profiles",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "messages",
+      "name": "messages_activity_id_activities_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "activity_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "activities",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "messages",
+      "name": "messages_author_id_profiles_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "author_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "profiles",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "organizations",
+      "name": "organizations_owner_id_profiles_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "owner_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "profiles",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "participants",
+      "name": "participants_activity_id_activities_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "activity_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "activities",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "participants",
+      "name": "participants_user_id_profiles_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "profiles",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "partner_codes",
+      "name": "partner_codes_issued_by_users_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "issued_by"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "partner_codes",
+      "name": "partner_codes_used_by_users_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "used_by"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "photos",
+      "name": "photos_owner_id_profiles_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "owner_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "profiles",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "photos",
+      "name": "photos_activity_id_activities_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "activity_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "activities",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "profiles_id_users_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "refresh_tokens",
+      "name": "refresh_tokens_user_id_users_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "saved",
+      "name": "saved_activity_id_activities_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "activity_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "activities",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "saved",
+      "name": "saved_user_id_profiles_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "profiles",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "exclusions",
+      "name": "exclusions_pkey",
+      "columns": [
+        "activity_id",
+        "user_id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "groups",
+      "name": "groups_pkey",
+      "columns": [
+        "faculty",
+        "group_name"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "participants",
+      "name": "participants_pkey",
+      "columns": [
+        "activity_id",
+        "user_id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "saved",
+      "name": "saved_pkey",
+      "columns": [
+        "activity_id",
+        "user_id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "admins",
+      "name": "admins_pkey",
+      "columns": [
+        "user_id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "email_tokens",
+      "name": "email_tokens_pkey",
+      "columns": [
+        "token_hash"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "messages",
+      "name": "messages_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "organizations",
+      "name": "organizations_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "partner_codes",
+      "name": "partner_codes_pkey",
+      "columns": [
+        "code_hash"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "photos",
+      "name": "photos_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "profiles_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "refresh_tokens",
+      "name": "refresh_tokens_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "users_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "photos",
+      "name": "photos_activity_position_key",
+      "nameExplicit": true,
+      "columns": [
+        "activity_id",
+        "position"
+      ],
+      "nullsNotDistinct": false,
+      "entityType": "uniques"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_seed_key_key",
+      "nameExplicit": false,
+      "columns": [
+        "seed_key"
+      ],
+      "nullsNotDistinct": false,
+      "entityType": "uniques"
+    },
+    {
+      "schema": "public",
+      "table": "organizations",
+      "name": "organizations_seed_key_key",
+      "nameExplicit": false,
+      "columns": [
+        "seed_key"
+      ],
+      "nullsNotDistinct": false,
+      "entityType": "uniques"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "profiles_seed_key_key",
+      "nameExplicit": false,
+      "columns": [
+        "seed_key"
+      ],
+      "nullsNotDistinct": false,
+      "entityType": "uniques"
+    },
+    {
+      "schema": "public",
+      "table": "refresh_tokens",
+      "name": "refresh_tokens_token_hash_key",
+      "nameExplicit": false,
+      "columns": [
+        "token_hash"
+      ],
+      "nullsNotDistinct": false,
+      "entityType": "uniques"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "users_email_key",
+      "nameExplicit": false,
+      "columns": [
+        "email"
+      ],
+      "nullsNotDistinct": false,
+      "entityType": "uniques"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_kind_check",
+      "value": "\"kind\" in ('event', 'invite')",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_title_check",
+      "value": "char_length(trim(\"title\")) between 5 and 80",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_description_check",
+      "value": "char_length(trim(\"description\")) between 15 and 1500",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_category_check",
+      "value": "\"category\" in ('Учёба', 'Карьера', 'Спорт', 'Общение', 'Творчество')",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_location_check",
+      "value": "char_length(trim(\"location\")) between 3 and 120",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_capacity_check",
+      "value": "\"capacity\" between 2 and 100",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_price_rub_check",
+      "value": "\"price_rub\" between 0 and 1000000",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_coordinates_check",
+      "value": "(\"latitude\" is null and \"longitude\" is null) or (\"latitude\" is not null and \"longitude\" is not null and \"latitude\" between -90 and 90 and \"longitude\" between -180 and 180)",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "activities",
+      "name": "activities_partner_badge_check",
+      "value": "\"partner_badge\" in ('Встреча с командой', 'Стажировка', 'Экскурсия', 'Мастер-класс')",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "email_tokens",
+      "name": "email_tokens_purpose_check",
+      "value": "\"purpose\" in ('verify_email')",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "messages",
+      "name": "messages_body_check",
+      "value": "char_length(trim(\"body\")) between 1 and 1000",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "organizations",
+      "name": "organizations_name_check",
+      "value": "char_length(trim(\"name\")) between 2 and 80",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "organizations",
+      "name": "organizations_description_check",
+      "value": "char_length(\"description\") <= 500",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "photos",
+      "name": "photos_position_check",
+      "value": "\"position\" between 0 and 4",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "photos",
+      "name": "photos_attached_check",
+      "value": "(\"activity_id\" is null) = (\"position\" is null)",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "photos",
+      "name": "photos_size_bytes_check",
+      "value": "\"size_bytes\" > 0",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "profiles_account_kind_check",
+      "value": "\"account_kind\" in ('student', 'partner')",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "profiles_name_check",
+      "value": "char_length(trim(\"name\")) between 1 and 40",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "profiles_faculty_check",
+      "value": "char_length(\"faculty\") <= 80",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "profiles_course_check",
+      "value": "\"course\" in ('', '1', '2', '3', '4', '5', '6')",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "profiles_group_name_check",
+      "value": "char_length(\"group_name\") <= 20",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "profiles_bio_check",
+      "value": "char_length(\"bio\") <= 300",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "profiles_interests_check",
+      "value": "\"interests\" <@ array['Учёба', 'Карьера', 'Спорт', 'Общение', 'Творчество']::text[]",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "profiles_theme_check",
+      "value": "\"theme\" in ('violet', 'forest', 'light')",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "profiles_company_check",
+      "value": "char_length(\"company\") <= 80",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "profiles_company_about_check",
+      "value": "char_length(\"company_about\") <= 400",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "profiles",
+      "name": "profiles_partner_check",
+      "value": "\"account_kind\" <> 'partner' or (char_length(trim(\"company\")) > 0 and \"faculty\" = '' and \"course\" = '' and \"group_name\" = '')",
+      "entityType": "checks"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "users_email_check",
+      "value": "\"email\" = lower(trim(\"email\")) and \"email\" <> ''",
+      "entityType": "checks"
+    }
+  ]
+}

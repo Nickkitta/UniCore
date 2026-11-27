@@ -432,9 +432,10 @@ erDiagram
 
 - `activities (created_at desc, id)` — порядок ленты; `(host_id)`, `(organization_id)`, `(starts_at)`.
 - `participants (user_id)`, `saved (user_id)`, `exclusions (user_id)` — «мои» списки в снимке.
+- `organizations (owner_id)` — свои сообщества в снимке.
 - `messages (activity_id, sent_at desc, id desc)` — последние 100 сообщений комнаты.
 - `refresh_tokens (family_id)`, `refresh_tokens (user_id)`; `email_tokens (user_id, created_at desc)` — ограничение повторной отправки письма.
-- `photos (activity_id)`; частичный `photos (created_at) where activity_id is null` — уборка неприкреплённых.
+- Фото события ищутся по `unique (activity_id, position)`, отдельный индекс по `activity_id` не нужен; частичный `photos (created_at) where activity_id is null` — уборка неприкреплённых.
 
 ### Отличия от схемы Supabase
 
@@ -449,7 +450,11 @@ erDiagram
 
 ### Миграции
 
-Схема описана в `apps/api/src/db/schema.ts`. `drizzle-kit generate` создаёт SQL-миграцию в `apps/api/drizzle/`, она коммитится. `db:migrate` применяет миграции при разработке, в проде — при старте контейнера (задача 8.4). Применённую миграцию не правят: изменения — новым файлом.
+Схема описана в `apps/api/src/db/schema.ts` (Drizzle 1.0). `npm -w apps/api run db:generate` создаёт папку миграции `apps/api/drizzle/<время>_<имя>/` с `migration.sql` и `snapshot.json`, она коммитится. Применённую миграцию не правят: изменения — новой миграцией.
+
+Сервер сам применяет недостающие миграции при старте, до того как начнёт принимать запросы, — при разработке, в тестах и в проде одинаково. Если миграция не прошла, сервер не стартует. Причина — PGlite: его папку данных может открыть только один процесс, и отдельный `db:migrate` при работающем `start:dev` её испортил бы. `db:migrate` (drizzle-kit, та же таблица `drizzle.__drizzle_migrations`) остаётся для ручного запуска при остановленном сервере.
+
+Списки значений в CHECK собираются в `schema.ts`: категории — из `categories` в `packages/shared`, остальные (темы, виды аккаунта и события, курс, бейджи партнёров) — литералы, пока их нет в `packages/shared` как значений. Если справочник поменяется, `db:generate` создаст миграцию с новым CHECK.
 
 ## 7. Ключевые сценарии
 
@@ -538,8 +543,8 @@ sequenceDiagram
 | Переменная                        | По умолчанию            | Назначение                                                                                                                           |
 | --------------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | `PORT`                            | `3000`                  | порт HTTP                                                                                                                            |
-| `DATABASE_URL`                    | —                       | Postgres; без неё — PGlite в `PGLITE_DIR`                                                                                            |
-| `PGLITE_DIR`                      | `.local/pgdata`         | файлы PGlite для разработки                                                                                                          |
+| `DATABASE_URL`                    | —                       | Postgres (`postgres://` или `postgresql://`); пустая или не заданная — PGlite в `PGLITE_DIR`                                         |
+| `PGLITE_DIR`                      | `.local/pgdata`         | файлы PGlite для разработки, путь от текущего каталога (`apps/api` у скриптов `npm -w`); `memory://` — база в памяти, так в тестах   |
 | `JWT_SECRET`                      | обязательна             | подпись токенов доступа, не короче 32 символов                                                                                       |
 | `ACCESS_TTL`, `REFRESH_TTL`       | `15m`, `30d`            | сроки токенов; для проверки 7.7 — `ACCESS_TTL=60s`                                                                                   |
 | `FILES_SECRET`                    | обязательна             | подпись ссылок на фото, отдельно от `JWT_SECRET`                                                                                     |
@@ -561,7 +566,7 @@ sequenceDiagram
 - **CORS** — только адреса из `CORS_ORIGINS`. Приложению на телефоне CORS не нужен, браузеру — нужен.
 - **Размеры** — JSON до 100 КБ (по умолчанию в Express), фото до 5 МБ через `limits.fileSize` у multer.
 - **Секреты** — `JWT_SECRET` и `FILES_SECRET` разные, хранятся только в `.env` на сервере. В git — только шаблоны.
-- **Здоровье** — `GET /v1/health` выполняет `SELECT 1` и отвечает `{ "ok": true }`, а при недоступной базе — 503 и `{ "ok": false }`. На это смотрит healthcheck контейнера и внешний мониторинг (задача 8.7).
+- **Здоровье** — `GET /v1/health` выполняет `SELECT 1` и отвечает `{ "ok": true }`, а если база вернула ошибку или не ответила за 2 секунды — 503 и `{ "ok": false }`. Статус ставит контроллер, а не исключение, поэтому глобальный фильтр ошибок этот ответ не трогает. Пул `pg` ждёт соединения не дольше 3 секунд и после перезапуска Postgres открывает новые соединения сам — сервер перезапускать не нужно. На это смотрит healthcheck контейнера и внешний мониторинг (задача 8.7).
 
 ## 10. Тестирование
 
@@ -585,7 +590,8 @@ apps/api/
     app.module.ts
     config/env.ts       zod-схема окружения и тип Env
     common/             DomainError, фильтр исключений, @Public, @CurrentUser, @AdminOnly
-    db/                 DatabaseModule, schema.ts, типы Db и Tx
+    db/                 schema.ts; database.ts — открытие Postgres или PGlite, миграции при старте, тип Db;
+                        database.module.ts — DatabaseModule поверх DrizzleModule из @nestjs/drizzle
     auth/               контроллер, сервис, токены, пароли, подтверждение почты, guards
     profile/
     activities/

@@ -64,12 +64,18 @@ NestJS 12 is likely newer than your training data: it moved to ESM, validates wi
 - Validate input with `@Body({ schema })`, `@Query({ schema })` and `@Param('id', { schema })` using schemas from `packages/shared`.
 - `src/app.setup.ts` holds the HTTP setup shared by `main.ts` and the tests; add global pipes, filters and middleware there, not in `main.ts`.
 - Environment variables are validated by the zod schema in `src/config/env.ts`; add new ones there and to `apps/api/.env.example`.
+- The database is Drizzle 1.0 (an RC: read https://orm.drizzle.team/llms.txt, the 0.x API differs) on Postgres when `DATABASE_URL` is set, otherwise on PGlite in `apps/api/.local/pgdata`. The schema is `src/db/schema.ts`; after changing it run `db:generate` and commit the new folder in `apps/api/drizzle/`, never edit an applied migration. Services take the database with `@InjectDrizzle()` from `@nestjs/drizzle`, typed as `Db` from `src/db/database.ts`.
+- The server applies pending migrations at startup. PGlite allows one process per data folder: run `db:migrate` against it only while the server is stopped.
+- `@electric-sql/pglite` stays on 0.5.x (PostgreSQL 18) in every workspace: 0.6 ships PostgreSQL 19 and can't open a 0.5 data folder.
 
 ```bash
 npm -w apps/api run start:dev   # watch mode with SWC; needs apps/api/.env (copy .env.example)
 npm -w apps/api run build       # SWC build to apps/api/dist
 npm -w apps/api run start       # run the build
 npm -w apps/api run check       # typecheck, oxlint, unit and e2e tests
+npm -w apps/api run db:generate # SQL migration from changes in src/db/schema.ts
+npm -w apps/api run db:migrate  # apply migrations (PGlite: only with the server stopped)
+npm -w apps/api run db:check    # consistency of the migration history
 ```
 
 ## Backend migration (in progress)

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { envSchema } from './config/env.js';
+import { DatabaseModule } from './db/database.module.js';
 import { HealthModule } from './health/health.module.js';
 
 @Module({
@@ -11,6 +12,7 @@ import { HealthModule } from './health/health.module.js';
       // Tests get their variables from the Vitest config, never from a developer's .env.
       ignoreEnvFile: process.env.NODE_ENV === 'test',
     }),
+    DatabaseModule,
     HealthModule,
   ],
 })
