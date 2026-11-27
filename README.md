@@ -10,8 +10,10 @@
 
 Node.js 22 LTS и npm. Проект проверен с Node.js 22.22.3.
 
+Репозиторий — монорепозиторий на npm workspaces: приложение лежит в `apps/mobile`, общий код — в `packages/shared`. `npm ci`, `npm start`, `npm run check` и команды сидера выполняются из корня репозитория, остальные команды приложения — из `apps\mobile`; в блоках ниже это видно по `cd apps\mobile`.
+
 ```powershell
-cd D:\VolSU\4kurs\Project
+# в корне репозитория
 npm.cmd ci
 npm.cmd start
 ```
@@ -19,9 +21,9 @@ npm.cmd start
 1. Подключи компьютер и телефон к одной Wi-Fi-сети.
 2. Установи совместимый с **SDK 58** [Expo Go для Android](https://expo.dev/go?sdkVersion=58&platform=android&device=true). Если установленный Expo Go уже поддерживает SDK 58, менять его не нужно.
 3. В Expo Go выбери сканирование QR. QR появится в терминале; ещё его можно открыть на компьютере по адресу [localhost:8081/connect.html](http://localhost:8081/connect.html).
-4. Войди по почте и паролю аккаунта Supabase Auth — параметры подключения берутся из `.env.local`
+4. Войди по почте и паролю аккаунта Supabase Auth — параметры подключения берутся из `apps/mobile/.env.local` (шаблон — `apps/mobile/.env.example`)
    Для автономного режима явно установи `EXPO_PUBLIC_DATA_MODE=mock` и перезапусти Expo
-5. Меняй файлы в `src/`: Expo обновляет приложение через Fast Refresh. Оставляй терминал с сервером открытым; Ctrl+C останавливает его.
+5. Меняй файлы в `apps/mobile/src/` (общие типы, справочники и проверки — в `packages/shared/src/`): Expo обновляет приложение через Fast Refresh. Оставляй терминал с сервером открытым; Ctrl+C останавливает его.
 
 В обычном PowerShell подходит `npm`, но `npm.cmd` работает и при запрете запуска PowerShell-скриптов. `npm ci` нужен только после первого скачивания или изменения lock-файла.
 
@@ -39,7 +41,7 @@ npm.cmd start
 - Проверь одинаковую сеть и выключи VPN на телефоне/ПК на время проверки.
 - Если Windows спросит о доступе Node.js к сети, разреши его для своей частной сети. Не нужно полностью отключать брандмауэр.
 - Для гостевой Wi-Fi-сети с изоляцией устройств попробуй домашнюю сеть или точку доступа телефона.
-- Запасной вариант — `npm.cmd run start:tunnel`. Expo может предложить установить `@expo/ngrok`. В этом режиме используй QR из терминала, а не LAN-страницу `connect.html`; туннель зависит от внешнего сервиса и обычно медленнее.
+- Запасной вариант — `npm.cmd run start:tunnel` из `apps\mobile`. Expo может предложить установить `@expo/ngrok`. В этом режиме используй QR из терминала, а не LAN-страницу `connect.html`; туннель зависит от внешнего сервиса и обычно медленнее.
 - При сообщении о несовместимом SDK скачай подходящий Expo Go по ссылке выше. Не обновляй один пакет React Native отдельно от Expo.
 - При занятом 8081: `npm.cmd start -- --port 8082`. Страница подключения будет на новом порту.
 - Для очистки кеша сборщика: `npm.cmd start -- --clear`.
@@ -69,19 +71,25 @@ npm.cmd start
 ## Структура
 
 ```text
-src/
-  app/                  маршруты Expo Router; вкладки, вход, детали, формы
-  components/           общие кнопки, поля, карточки, фильтры, оформление
-  data/seed.ts          исходные демонстрационные данные
-  domain/               типы, поиск, подсчёт участников, валидация
-  services/contracts.ts интерфейс CampusRepository
-  services/mockRepository.ts локальный адаптер AsyncStorage
-  services/supabaseRepository.ts серверные данные и Auth
-  services/index.ts     выбор адаптера через EXPO_PUBLIC_DATA_MODE
-  state/                загрузка состояния, мутации, ошибки, уведомления
-  theme.ts              палитра и базовые дизайн-токены
-tests/                  тесты логики и браузерные сценарии
-scripts/                запуск с правильным LAN-адресом и генерация иконок
+apps/mobile/                      приложение Expo (@unicore/mobile)
+  src/app/                        маршруты Expo Router; вкладки, вход, детали, формы
+  src/components/                 общие кнопки, поля, карточки, фильтры, карта, оформление
+  src/data/seed.ts                исходные демонстрационные данные
+  src/domain/activity.ts          поиск, подсчёт участников, формат цены и дат
+  src/services/contracts.ts       интерфейс CampusRepository
+  src/services/mockRepository.ts  локальный адаптер AsyncStorage
+  src/services/supabaseRepository.ts серверные данные и Auth
+  src/services/index.ts           выбор адаптера через EXPO_PUBLIC_DATA_MODE
+  src/state/                      загрузка состояния, мутации, ошибки, уведомления
+  src/theme.tsx                   палитра и базовые дизайн-токены
+  tests/                          тесты логики и браузерные сценарии
+  scripts/                        запуск с правильным LAN-адресом и генерация иконок
+packages/shared/src/              @unicore/shared: типы, справочники, проверка события, коды ошибок
+supabase/                         миграции, сиды и инструкция Supabase
+scripts/                          сидер Supabase
+tests/                            тесты SQL-миграций и сидера
+docs/                             план перехода на собственный сервер
+deploy/                           шлюз Caddy для доступа к Supabase через свой домен
 ```
 
 В серверном режиме изменения подтверждаются базой, после записи приложение загружает актуальное состояние, сессией управляет Supabase Auth
@@ -91,9 +99,9 @@ scripts/                запуск с правильным LAN-адресом 
 
 ## Supabase
 
-Подключён адаптер `src/services/supabaseRepository.ts`, структура базы и серверные функции находятся в `supabase/migrations/`
-В `.env.local` задаются `EXPO_PUBLIC_DATA_MODE=supabase`, URL проекта и publishable key
-Пример конфигурации — `.env.example`
+Подключён адаптер `apps/mobile/src/services/supabaseRepository.ts`, структура базы и серверные функции находятся в `supabase/migrations/`
+В `apps/mobile/.env.local` задаются `EXPO_PUBLIC_DATA_MODE=supabase`, URL проекта и publishable key
+Пример конфигурации — `apps/mobile/.env.example`
 
 Авторизация работает через почту и пароль, сессия сохраняется на устройстве
 Сервер проверяет владельца данных, вместимость и повторное участие
@@ -106,6 +114,7 @@ scripts/                запуск с правильным LAN-адресом 
 Настройка ключа, миграция и формат своего набора описаны в [инструкции](supabase/seeds/README.md)
 
 ```powershell
+# в корне репозитория
 npm run seed:preview
 npm run seed
 npm run seed:refresh
@@ -116,16 +125,20 @@ npm run seed:refresh
 ## Проверки
 
 ```powershell
+# в корне репозитория
 npm.cmd run check
+
+cd apps\mobile
 npx.cmd expo-doctor
 npx.cmd expo export --platform android --output-dir dist/android
 ```
 
-`check` запускает TypeScript, ESLint и Vitest. Тесты покрывают сохранение и восстановление, ошибки хранилища, конкурирующие записи, вместимость, создание, профиль, фильтры и даты.
+`check` в корне запускает TypeScript, ESLint и Vitest в `apps/mobile` и `packages/shared`, а затем тесты SQL-миграций и сидера Supabase (`test:supabase`). Тесты покрывают сохранение и восстановление, ошибки хранилища, конкурирующие записи, вместимость, создание, профиль, фильтры и даты.
 
 Браузерные сценарии:
 
 ```powershell
+cd apps\mobile
 npx.cmd playwright install chromium
 npm.cmd run test:e2e
 ```
@@ -133,21 +146,26 @@ npm.cmd run test:e2e
 Можно использовать установленный Chrome вместо скачивания Chromium:
 
 ```powershell
+cd apps\mobile
 $env:PLAYWRIGHT_CHROME_PATH='C:\Program Files\Google\Chrome\Application\chrome.exe'
 npm.cmd run test:e2e
 ```
 
-Тесты поднимают локальный сервер при необходимости. Снимки сохраняются в `preview/`, отчёт об ошибках — в `test-results/` (оба каталога исключены из Git). Android export проверяет сборку JS/Hermes, но не создаёт APK и не проверяет устройство.
+Тесты поднимают локальный сервер при необходимости. Снимки сохраняются в `apps/mobile/preview/`, отчёт об ошибках — в `apps/mobile/test-results/` (оба каталога исключены из Git). Android export проверяет сборку JS/Hermes, но не создаёт APK и не проверяет устройство.
+
+`npm ls` (npm 11.4.1) падает с `Cannot read properties of null (reading 'edgesOut')`, если текущий каталог записан с маленькой буквой диска (`d:\…` — так открывают терминал VS Code и Git Bash). Запускай его из PowerShell, перейдя в каталог с большой буквой: `cd D:\…`.
 
 На 12.11.2026 после перехода на SDK 58 npm audit сообщает о 3 moderate production advisories в цепочке Expo → fingerprint → minimatch; high и critical отсутствуют. Принудительные overrides и `audit fix --force` не применены; перед публичным релизом обновить согласованный набор Expo SDK и повторить проверки.
 
 ## Установка отдельным APK
 
-Для установки на Android и передачи друзьям используется профиль `preview` в `eas.json`
+Для установки на Android и передачи друзьям используется профиль `preview` в `apps/mobile/eas.json`
 Он создаёт отдельный APK с подключением к общей базе Supabase — Expo Go и локальный Metro для работы не нужны
 Публичные настройки клиента и карт указаны в профиле сборки, локальные файлы с ключами и паролями исключены через `.easignore`
+EAS отправляет на сборку весь репозиторий и читает `.easignore` только из его корня; файл заменяет все `.gitignore`, поэтому новые правила игнорирования добавляй в оба
 
 ```powershell
+cd apps\mobile
 npx --yes eas-cli@latest login
 npm run build:apk
 ```
@@ -165,6 +183,6 @@ npm run build:apk
 
 ## Дизайн
 
-Направление: графитовый фон `#101211`, лайм `#D4F879` для основного действия, лавандовый `#CAB9F5` для вторичного акцента. Крупные заголовки, контрастные карточки, одна понятная задача на экран. Орбиты — визуальный образ людей вокруг общего интереса. SVG-исходник значка: `assets/unicore-mark.svg`.
+Направление: графитовый фон `#101211`, лайм `#D4F879` для основного действия, лавандовый `#CAB9F5` для вторичного акцента. Крупные заголовки, контрастные карточки, одна понятная задача на экран. Орбиты — визуальный образ людей вокруг общего интереса. SVG-исходник значка: `apps/mobile/assets/unicore-mark.svg`.
 
 Для отдельных макетов подходят [Figma Starter](https://www.figma.com/pricing/) (бесплатный тариф с ограничениями) и [Penpot](https://penpot.app/pricing/) (бесплатный Professional). На этом этапе можно совершенствовать дизайн непосредственно в приложении. Дальше полезны 2–3 референса и обратная связь после просмотра на телефоне.
