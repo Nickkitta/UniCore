@@ -60,27 +60,27 @@
 
 Все адреса с префиксом `/v1`. Защищённые запросы идут с заголовком `Authorization: Bearer <access token>`. После изменяющих запросов клиент, как и сейчас, заново загружает `GET /v1/snapshot`.
 
-| Метод `CampusRepository`    | HTTP                                                                              | Ответ                                       |
-| --------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------- |
-| `load`                      | `GET /v1/snapshot`                                                                | `Snapshot` того же вида, что сейчас         |
-| `signIn`                    | `POST /v1/auth/sign-in` `{ email, password, portal }`                             | `{ accessToken, refreshToken, expiresIn }`  |
-| `signUp`                    | `POST /v1/auth/sign-up` `{ email, password, name, partner? }`                     | токены или `{ verificationRequired: true }` |
-| `resendConfirmation`        | `POST /v1/auth/resend-verification` `{ email }`                                   | 204                                         |
-| `signOut`                   | `POST /v1/auth/sign-out` `{ refreshToken }`                                       | 204                                         |
-| — (обновление сессии)       | `POST /v1/auth/refresh` `{ refreshToken }`                                        | новые токены                                |
-| — (ссылка из письма)        | `GET /v1/auth/verify?token=…`                                                     | HTML-страница «Почта подтверждена»          |
-| `updateProfile`, `setTheme` | `PATCH /v1/profile`                                                               | 204                                         |
-| `toggleSaved`               | `PUT /v1/activities/:id/saved` `{ saved }`                                        | 204                                         |
-| `toggleJoined`              | `PUT /v1/activities/:id/membership` `{ joined }`                                  | 204                                         |
-| `createInvite`              | `POST /v1/photos` для каждого фото, затем `POST /v1/activities` `{ …, photoIds }` | `{ id }`                                    |
-| `room`                      | `GET /v1/activities/:id/room`                                                     | `EventRoom`                                 |
-| `postMessage`               | `POST /v1/activities/:id/messages` `{ body }`                                     | 204                                         |
-| `setCohost`                 | `PUT /v1/activities/:id/members/:userId/cohost` `{ enabled }`                     | 204                                         |
-| `removeMember`              | `DELETE /v1/activities/:id/members/:userId`                                       | 204                                         |
-| `issuePartnerCode`          | `POST /v1/admin/partner-codes`                                                    | `{ code }`                                  |
-| `reset`                     | нет, только режим mock                                                            | —                                           |
-| `checkConnection`           | `GET /v1/health`                                                                  | `{ ok: true }`                              |
-| — (фото в ленте)            | `GET /v1/files/:id?exp=…&sig=…`                                                   | `image/jpeg`                                |
+| Метод `CampusRepository`    | HTTP                                                                              | Ответ                                                     |
+| --------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `load`                      | `GET /v1/snapshot`                                                                | `Snapshot` того же вида, что сейчас                       |
+| `signIn`                    | `POST /v1/auth/sign-in` `{ email, password, portal }`                             | `{ accessToken, refreshToken, expiresIn }`                |
+| `signUp`                    | `POST /v1/auth/sign-up` `{ email, password, name, partner? }`                     | токены или `{ verificationRequired: true }`               |
+| `resendConfirmation`        | `POST /v1/auth/resend-verification` `{ email }`                                   | 204                                                       |
+| `signOut`                   | `POST /v1/auth/sign-out` `{ refreshToken }`                                       | 204                                                       |
+| — (обновление сессии)       | `POST /v1/auth/refresh` `{ refreshToken }`                                        | новые токены                                              |
+| — (ссылка из письма)        | `GET /v1/auth/verify?token=…`                                                     | HTML-страница «Почта подтверждена»                        |
+| `updateProfile`, `setTheme` | `PATCH /v1/profile`                                                               | 204                                                       |
+| `toggleSaved`               | `PUT /v1/activities/:id/saved` `{ saved }`                                        | 204                                                       |
+| `toggleJoined`              | `PUT /v1/activities/:id/membership` `{ joined }`                                  | 204                                                       |
+| `createInvite`              | `POST /v1/photos` для каждого фото, затем `POST /v1/activities` `{ …, photoIds }` | `{ id }`                                                  |
+| `room`                      | `GET /v1/activities/:id/room`                                                     | `EventRoom`                                               |
+| `postMessage`               | `POST /v1/activities/:id/messages` `{ body }`                                     | 204                                                       |
+| `setCohost`                 | `PUT /v1/activities/:id/members/:userId/cohost` `{ enabled }`                     | 204                                                       |
+| `removeMember`              | `DELETE /v1/activities/:id/members/:userId`                                       | 204                                                       |
+| `issuePartnerCode`          | `POST /v1/admin/partner-codes`                                                    | `{ code }`                                                |
+| `reset`                     | нет, только режим mock                                                            | —                                                         |
+| `checkConnection`           | `GET /v1/health`                                                                  | `{ ok: true }`; 503 `{ ok: false }`, если база недоступна |
+| — (фото в ленте)            | `GET /v1/files/:id?exp=…&sig=…`                                                   | `image/jpeg`                                              |
 
 **Формат ошибки:** `{ "error": { "code": "UNICORE_FULL", "message": "…" } }`. Текст для пользователя клиент берёт по коду из общей таблицы в `packages/shared`; `message` нужен для отладки.
 
@@ -164,25 +164,31 @@
   - HTTP-адаптер Express — он в v12 по умолчанию, и загрузка фото через multer в 5.2 работает без доработок;
   - сборщик SWC с проверкой типов: `start:dev` — `nest start -b swc -w --type-check`, `build` — `nest build -b swc`, `start` — `node dist/main.js`;
   - глобальный префикс `v1`, `GET /v1/health` отвечает `{ "ok": true }`;
+  - CORS только для адресов из `CORS_ORIGINS` (по умолчанию `http://localhost:8081` — Expo web): без него приложение в браузере и Playwright не достучатся до API, телефону CORS не нужен;
+  - `TRUST_PROXY` (по умолчанию `false`): при `true` Express берёт IP клиента из `X-Forwarded-For` — это нужно за Caddy для лимитов в 3.7;
   - `@nestjs/config` с zod-схемой переменных окружения; шаблон `apps/api/.env.example`;
   - скрипт `check` (typecheck, lint, тесты) входит в корневой `npm run check`; линтер — oxlint из шаблона Nest.
-  - Проверка: `npm -w apps/api run start:dev` стартует; `curl http://localhost:3000/v1/health` возвращает `{"ok":true}`; без обязательной переменной (например, `JWT_SECRET`) сервер не стартует и называет переменную; сервис внедряется в контроллер по типу, без `@Inject` (значит, SWC выдаёт метаданные декораторов); после `npm -w apps/api run build` команда `node apps/api/dist/main.js` отвечает на `/v1/health`; `npm run check` из корня проходит.
+  - Проверка: `npm -w apps/api run start:dev` стартует; `curl http://localhost:3000/v1/health` возвращает `{"ok":true}`; без обязательной переменной (например, `JWT_SECRET`) сервер не стартует и называет переменную; сервис внедряется в контроллер по типу, без `@Inject` (значит, SWC выдаёт метаданные декораторов); после `npm -w apps/api run build` команда `node apps/api/dist/main.js` отвечает на `/v1/health`; тест — предварительный запрос `OPTIONS` с `Origin: http://localhost:8081` получает `Access-Control-Allow-Origin`, с чужого адреса — нет; `npm run check` из корня проходит.
 - [ ] 2.2 Подключить `@unicore/shared` к серверу. Пакет поставляется исходниками TS без сборки — так его берёт Metro, — а сервер в разработке и в проде запускает скомпилированный JS через `node`. Официального рецепта для такого пакета у Nest нет, поэтому выбрать способ и записать его в журнал:
   - сборщик rspack (`nest build -b rspack`, опция `bundleDependencies`), который включает пакет в бандл;
   - или явные расширения `.ts` в импортах `packages/shared` (`erasableSyntaxOnly`), чтобы Node сам снимал типы с файлов пакета — они лежат вне `node_modules`.
   - Проверка: значение из `@unicore/shared` используется сервером и тестом и работает в `start:dev`, в Vitest и в `node dist/main.js`; в `apps/mobile` `npm run check`, `npx expo export --platform android` и e2e (mock) проходят без изменений.
 - [ ] 2.3 Схема Drizzle и миграции drizzle-kit:
   - таблицы `users`, `refresh_tokens`, `email_tokens`, `profiles`, `admins`, `partner_codes`, `organizations`, `groups`, `activities`, `participants`, `saved`, `exclusions`, `messages`, `photos`;
-  - ограничения (CHECK, уникальность, внешние ключи с `on delete cascade`) переносятся из [текущих миграций](../supabase/migrations/);
+  - поля, ограничения и индексы — по разделу «База данных» [архитектуры](backend-architecture.md#6-база-данных); ограничения (CHECK, уникальность, внешние ключи с `on delete cascade`, для `organization_id`, `issued_by` и `used_by` — `on delete set null`) переносятся из [текущих миграций](../supabase/migrations/);
+  - новые по сравнению с Supabase поля: `partner_codes.used_by`, `exclusions.created_at`, `admins.granted_at`;
   - глобальный `DatabaseModule` отдаёт экземпляр Drizzle по токену: Postgres (`pg`) по `DATABASE_URL`, иначе PGlite в `apps/api/.local/pgdata`; соединение закрывается при остановке приложения (`enableShutdownHooks`);
+  - `/v1/health` выполняет `SELECT 1`: база недоступна — 503 и `{ "ok": false }`;
   - скрипты `db:generate` (drizzle-kit) и `db:migrate`.
-  - Проверка: `npm -w apps/api run db:migrate` на пустой базе проходит для PGlite и для Postgres; повторный запуск ничего не меняет; `drizzle-kit check` без расхождений.
+  - Проверка: `npm -w apps/api run db:migrate` на пустой базе проходит для PGlite и для Postgres; повторный запуск ничего не меняет; `drizzle-kit check` без расхождений; тест — при недоступной базе `/v1/health` отвечает 503 `{"ok":false}`.
 - [ ] 2.4 `apps/api/docker-compose.dev.yml` с Postgres.
-  - Проверка: `docker compose -f apps/api/docker-compose.dev.yml up -d`, затем сервер с `DATABASE_URL` применяет миграции и отвечает на `/v1/health`.
+  - Проверка: `docker compose -f apps/api/docker-compose.dev.yml up -d`, затем сервер с `DATABASE_URL` применяет миграции и отвечает на `/v1/health`; после `docker compose … stop` ответ — 503, после `start` — снова 200 без перезапуска сервера.
 - [ ] 2.5 Контракт в `packages/shared/src/api`: zod-схемы запросов и ответов для всех адресов из раздела [Контракт API](#контракт-api), формат ошибки, список кодов и их HTTP-статусы. `Snapshot` и `EventRoom` совпадают с текущими типами в `models.ts`.
   - Контроллеры проверяют вход через `@Body({ schema })`, `@Query({ schema })` и `@Param('id', { schema })` с глобальным `StandardSchemaValidationPipe`; его `exceptionFactory` отдаёт 422 `UNICORE_INVALID_INPUT` вместо 400 по умолчанию.
   - В таблицу сообщений добавить тексты для `UNICORE_INVALID_CODE` и `UNICORE_INVALID_INPUT` — их не хватало с 1.4.
-  - Проверка: некорректное тело даёт 422 `UNICORE_INVALID_INPUT`, в `message` есть путь к полю; тест типов (`expectTypeOf`) — `Snapshot` и `EventRoom`, выведенные из схем, совпадают с типами приложения; `tsc --noEmit` проходит в `apps/api` и `apps/mobile`.
+  - `Activity` в ответе API не содержит `photoPaths`: это пути Supabase Storage, а интерфейс читает только `photoUrls`. В `models.ts` поле остаётся необязательным до этапа 9.
+  - Список партнёрских бейджей `partnerBadges` переносится из [create.tsx](../apps/mobile/src/app/create.tsx) в `catalog.ts`; экран создания и схема создания события берут его оттуда.
+  - Проверка: некорректное тело даёт 422 `UNICORE_INVALID_INPUT`, в `message` есть путь к полю; тест типов (`expectTypeOf`) — `Snapshot` и `EventRoom`, выведенные из схем, совпадают с типами приложения; `git grep -n "Встреча с командой" -- apps/mobile/src` ничего не находит; `tsc --noEmit` проходит в `apps/api` и `apps/mobile`.
 - [ ] 2.6 Ошибки и логи:
   - класс `DomainError` с кодом `UNICORE_*`; глобальный фильтр исключений переводит его в HTTP-статус по таблице из `packages/shared` и отдаёт `{ "error": { "code", "message" } }`;
   - исключения Nest (`NotFoundException`, `PayloadTooLargeException`, `ThrottlerException`) приводятся к тому же формату с кодами `UNICORE_NOT_FOUND`, `UNICORE_FILE_TOO_LARGE`, `UNICORE_RATE_LIMIT`;
@@ -225,13 +231,13 @@
   - Проверка: тесты — при включённом флаге вход до подтверждения даёт 403 `UNICORE_EMAIL_NOT_CONFIRMED`; ссылка срабатывает один раз; просроченная ссылка показывает страницу с ошибкой. Вручную: регистрация через curl, ссылка из консоли открывается в браузере, после неё вход проходит.
 - [ ] 3.5 Регистрация партнёра по промокоду в одной транзакции:
   - код ищется по sha256 от `lower(trim(code))`, не использован, срок не истёк;
-  - код помечается использованным;
+  - код помечается использованным (`used_at` и `used_by`);
   - создаётся аккаунт и профиль партнёра с компанией.
   - Проверка: тесты — верный код работает один раз; использованный, просроченный и выдуманный дают 422 `UNICORE_INVALID_CODE`, и аккаунт при этом не создаётся.
 - [ ] 3.6 CLI-команды `npm -w apps/api run admin:grant -- <email>` и `admin:revoke`. Команды поднимают Nest без HTTP (`NestFactory.createApplicationContext`) и вызывают те же сервисы.
   - Проверка: после `admin:grant` в снимке `profile.isAdmin === true`, после `admin:revoke` — `false`; несуществующая почта даёт понятную ошибку.
-- [ ] 3.7 Лимиты частоты на адресах `/v1/auth/*` через `@nestjs/throttler`: по IP и по почте (свой guard на основе `ThrottlerGuard`, ключ берётся из почты в теле запроса).
-  - Проверка: тест — серия неверных входов упирается в 429 `UNICORE_RATE_LIMIT`; после окна ожидания вход снова возможен.
+- [ ] 3.7 Лимиты частоты на адресах `/v1/auth/*` через `@nestjs/throttler`: по IP и по почте (свой guard на основе `ThrottlerGuard`, ключ берётся из почты в теле запроса). IP клиента берётся из `X-Forwarded-For` только при `TRUST_PROXY=true` (2.1), иначе заголовок игнорируется — им нельзя обойти лимит.
+  - Проверка: тест — серия неверных входов упирается в 429 `UNICORE_RATE_LIMIT`; после окна ожидания вход снова возможен; при `TRUST_PROXY=false` смена `X-Forwarded-For` не сбрасывает лимит, при `true` — запросы с разными адресами считаются отдельно.
 - [ ] 3.8 Глобальный guard проверяет `Authorization: Bearer`; открытые адреса помечены декоратором `@Public()`.
   - Проверка: тест — каждый защищённый адрес без токена отвечает 401 `UNICORE_AUTH_REQUIRED` (тест берёт список маршрутов из метаданных контроллеров, а не перечисляет их вручную).
 
@@ -262,7 +268,7 @@
   - Проверка: тест на каждое ограничение; прошедшая дата даёт 409 `UNICORE_PAST`; чужое сообщество — 403 `UNICORE_ORGANIZATION_FORBIDDEN`; неверные теги — 422 `UNICORE_INVALID_TAGS`.
 - [ ] 4.3 Партнёрские события:
   - создать может только аккаунт партнёра;
-  - бейдж обязателен и один из: «Стажировка», «Экскурсия», «Мастер-класс», «Встреча с командой»;
+  - бейдж обязателен и один из `partnerBadges` (2.5): «Стажировка», «Экскурсия», «Мастер-класс», «Встреча с командой»;
   - сообщество не привязывается;
   - организатор-партнёр не занимает место.
   - Проверка: студент с бейджем получает 403; партнёр без бейджа — 422; у события партнёра с вместимостью 2 могут записаться два студента.
@@ -320,8 +326,9 @@
   - Проверка: тесты — PNG под видом JPEG даёт 422; файл больше 5 МБ — 413 `UNICORE_FILE_TOO_LARGE`; без входа — 401.
 - [ ] 5.3 Создание события с `photoIds`: до 5 штук, все принадлежат автору и ещё не прикреплены; привязка — в транзакции создания.
   - Проверка: тесты — чужое фото, уже прикреплённое фото и шесть фото дают 422 `UNICORE_INVALID_PHOTOS`, а событие не создаётся.
-- [ ] 5.4 В снимке `photoUrls` — ссылки `/v1/files/:id?exp=…&sig=…`: HMAC-SHA256 с секретом сервера, срок 1 час. `GET /v1/files/:id` проверяет подпись и отдаёт файл без заголовка авторизации. Неприкреплённое фото доступно только владельцу.
-  - Проверка: тесты — подделанная подпись и истёкший срок дают 403 `UNICORE_BAD_SIGNATURE`. Вручную: ссылка из снимка открывается в браузере.
+- [ ] 5.4 В снимке `photoUrls` — ссылки `/v1/files/:id?exp=…&sig=…`: HMAC-SHA256 с секретом `FILES_SECRET` (отдельно от `JWT_SECRET`). `GET /v1/files/:id` проверяет подпись и отдаёт файл без заголовка авторизации, с `Cache-Control: private, max-age=3600`. Неприкреплённое фото доступно только владельцу.
+  - `exp` округляется вверх до начала следующего часа плюс час: снимки, которые приложение запрашивает каждые 15 секунд, в течение часа отдают одну и ту же ссылку, и картинка берётся из кеша, а не скачивается заново. Ссылка живёт от 1 до 2 часов.
+  - Проверка: тесты — подделанная подпись и истёкший срок дают 403 `UNICORE_BAD_SIGNATURE`; два снимка с разницей в 15 секунд внутри одного часа дают одинаковые `photoUrls`; ссылка действует не меньше часа с момента выдачи. Вручную: ссылка из снимка открывается в браузере.
 - [ ] 5.5 Уборка: неприкреплённые фото старше 24 часов удаляются по расписанию на сервере (`@nestjs/schedule`) и командой `npm -w apps/api run photos:cleanup`.
   - Проверка: тест — удаляются только неприкреплённые и только старше порога; файлы исчезают и с диска.
 - [ ] 5.6 Прикреплённые фото удалить нельзя никаким запросом клиента.
@@ -397,8 +404,8 @@
   - Проверка: в заметке к этапу записаны выбор, тариф и причины; с мобильной сети без VPN сервер открывается по IP.
 - [ ] 8.2 Разобраться с требованиями 152-ФЗ: почта, имя, институт и группа — персональные данные. Нужны ли согласие на обработку и политика конфиденциальности, как хранить данные.
   - Проверка: вывод и источники записаны в заметке; нужные тексты (согласие, политика) добавлены в задачи, если они требуются.
-- [ ] 8.3 Домен, DNS, TLS через Caddy (опыт есть в [deploy/gateway](../deploy/gateway/README.md)).
-  - Проверка: `curl -I https://<домен>/v1/health` даёт 200; сертификат действителен; HTTP перенаправляется на HTTPS.
+- [ ] 8.3 Домен, DNS, TLS через Caddy (опыт есть в [deploy/gateway](../deploy/gateway/README.md)). У `api` за Caddy — `TRUST_PROXY=true`; порт `api` наружу не открыт, иначе `X-Forwarded-For` можно подделать в обход Caddy.
+  - Проверка: `curl -I https://<домен>/v1/health` даёт 200; сертификат действителен; HTTP перенаправляется на HTTPS; в логе `api` у запроса реальный IP клиента, а не адрес контейнера Caddy; порт 3000 снаружи закрыт.
 - [ ] 8.4 `deploy/docker-compose.prod.yml`:
   - `api` из многоэтапного `apps/api/Dockerfile`, `postgres`, `caddy`;
   - тома для данных Postgres и каталога фото;
@@ -409,8 +416,8 @@
   - Проверка: письмо подтверждения приходит во «Входящие», а не в спам, на ящики Gmail, Яндекса и Mail.ru.
 - [ ] 8.6 Бэкапы: ночной `pg_dump` и архив каталога фото во внешнее хранилище, хранить 14 дней.
   - Проверка: пробное восстановление последнего бэкапа на чистый экземпляр — вход, лента и фото работают; дата проверки записана в заметке.
-- [ ] 8.7 Мониторинг: healthcheck контейнера, внешняя проверка `/v1/health` с оповещением, ротация логов Docker, оповещение при заполнении диска на 80%.
-  - Проверка: остановить `api` — оповещение приходит за 5 минут; логи не растут бесконечно (`max-size` настроен).
+- [ ] 8.7 Мониторинг: healthcheck контейнера и внешняя проверка `/v1/health` с оповещением — 503 означает, что недоступна база (2.3); ротация логов Docker; оповещение при заполнении диска на 80%.
+  - Проверка: остановить `api` — оповещение приходит за 5 минут; остановить `postgres` — тоже; логи не растут бесконечно (`max-size` настроен).
 - [ ] 8.8 Окружение EAS preview: `EXPO_PUBLIC_DATA_MODE=api`, `EXPO_PUBLIC_API_BASE_URL=https://<домен>`; собрать APK.
   - Проверка: APK устанавливается на два устройства; чек-лист из 7.7 проходит против боевого сервера.
 
@@ -422,7 +429,7 @@
 
 **Статус:** не начат · **Зависит от:** 8 · **Результат:** в проекте не осталось кода и настроек Supabase.
 
-- [ ] 9.1 Удалить из приложения `supabaseRepository.ts`, `supabaseClient.ts`, режим `supabase` и зависимость `@supabase/supabase-js`; `base64-arraybuffer` — если больше нигде не используется.
+- [ ] 9.1 Удалить из приложения `supabaseRepository.ts`, `supabaseClient.ts`, режим `supabase` и зависимость `@supabase/supabase-js`; `base64-arraybuffer` — если больше нигде не используется; поле `photoPaths` из `Activity` в `models.ts` (2.5).
   - Проверка: `npm ls @supabase/supabase-js` ничего не находит; `npm run check` проходит.
 - [ ] 9.2 Перенести нужное из `supabase/README.md` и `supabase/seeds/README.md` (права доступа, ограничения, работа с сидером) в `apps/api/README.md`. Затем удалить `supabase/`, `tests/database.test.ts`, старые `scripts/seed.mjs`, `scripts/seed-core.mjs`, `tests/seeder.test.mjs` и `deploy/gateway/`.
   - Проверка: `npm run check` проходит; тесты, заменившие удалённые, есть в `apps/api` (этапы 4 и 6); в `apps/api/README.md` описаны права доступа и сидер.
@@ -450,3 +457,4 @@
 | 27.11.2026 | 1.6: README, AGENTS.md, `supabase/README.md` и `deploy/gateway/README.md` описывают монорепозиторий. Правило для команд: `npm ci`, `npm start`, `npm run check` и сидер — из корня, остальные команды приложения — из `apps\mobile` (в блоках README явный `cd apps\mobile`); корневых алиасов не добавлено. В AGENTS.md — раздел о раскладке репозитория, `npx expo install` из `apps/mobile` и `npm run check` из корня перед сдачей задачи. В этом файле обновлены только цели ссылок на перенесённые файлы, исторический текст проверок не менялся. Проверено: 39 относительных ссылок в шести `.md` открываются; из корня `npm ci`, `npm run check`, `npm run seed:preview`, `npm start -- --port 8083` (аргумент дошёл, QR напечатан, `.env.local` взят из `apps/mobile`); из `apps\mobile` `expo-doctor` 20/20, `expo export --platform android`, `test:e2e` 2/2 с `PLAYWRIGHT_CHROME_PATH` (без него — нет скачанного браузера Playwright, как и раньше). Не запускались: `start:tunnel` (внешний ngrok), `eas login` и `build:apk` (аккаунт и квота Expo), `seed` и `seed:refresh` (пишут в облачный Supabase). Приёмка этапа ждёт проверки режима Supabase в Expo Go. |
 | 27.11.2026 | Стек сервера изменён по решению владельца: NestJS 12 вместо Fastify (ESM, адаптер Express, сборщик SWC, `@nestjs/config`, `@nestjs/throttler`, `nestjs-pino`, Vitest с `unplugin-swc`, supertest). Postgres, Drizzle, PGlite, схема авторизации, контракт API и коды ошибок не меняются. Этап 2 переписан: 7 задач вместо 6. Новая 2.2 — подключение `@unicore/shared` к серверу: у Nest нет рецепта для пакета из исходников TS, способ выбирается в задаче. Контракт стал 2.5, туда перенесена заметка «На 2.4» из записи о 1.4. В контракт добавлен код `UNICORE_INTERNAL` (500). Под Nest уточнены 3.6 (`createApplicationContext`), 3.7 (`ThrottlerGuard`), 3.8 (глобальный guard и `@Public()`), 5.2 (`FileInterceptor` с лимитом размера), 5.5 (`@nestjs/schedule`). Основание — документация NestJS 12: руководство по миграции, валидация, рецепт SWC, тестирование, CLI, конфигурация, лимиты, загрузка файлов.                                                                                                                                                                                                                                                       |
 | 27.11.2026 | Составлен [backend-architecture.md](backend-architecture.md): границы системы, модули Nest и правило владения таблицами, путь запроса, авторизация (токены, ротация с отзывом семьи, регистрация), схема базы (ER-диаграмма, что проверяет база и что сервис, индексы, отличия от Supabase), сценарии записи, фото и снимка, конфигурация, тестирование. Открытые вопросы из раздела 13 документа ещё не перенесены в задачи.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| 27.11.2026 | Открытые вопросы из раздела 13 [архитектуры](backend-architecture.md#13-открытые-вопросы) разнесены по задачам. 2.1: CORS (`CORS_ORIGINS`) и `TRUST_PROXY`. 2.3: новые поля `partner_codes.used_by`, `exclusions.created_at`, `admins.granted_at`; `/v1/health` проверяет базу и при её недоступности отвечает 503 `{ ok: false }` — строка контракта дополнена; 2.4 и 8.7 проверяют это. 2.5: API не отдаёт `photoPaths` (удаление поля — в 9.1), бейджи партнёров переезжают в `partnerBadges` в `catalog.ts` (ссылка из 4.3). 3.5: при погашении промокода пишется `used_by`. 3.7: `X-Forwarded-For` учитывается только при `TRUST_PROXY`. 5.4: `FILES_SECRET`, `exp` округляется до часа, чтобы ссылки на фото не менялись между опросами снимка. 8.3: `TRUST_PROXY=true` за Caddy, порт `api` наружу закрыт.                                                                                                                                                                                                                                                                                                                                                               |
