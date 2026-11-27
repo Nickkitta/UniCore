@@ -28,6 +28,7 @@
     "@node-rs/argon2": "^2.2.2",
     "@unicore/shared": "*",
     "drizzle-orm": "1.0.0-rc.6",
+    "jose": "^6.2.18",
     "nestjs-pino": "^5.3.2",
     "pg": "^8.23.1",
     "pino": "^10.4.0",

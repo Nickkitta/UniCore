@@ -251,6 +251,15 @@ stateDiagram-v2
 
 Повторное предъявление использованного токена значит, что его кто-то скопировал. Сервер отзывает всю семью, и обоим владельцам копий приходится входить заново.
 
+Код — `TokensService` (`src/auth/tokens.service.ts`) и функции токена доступа в `src/auth/access-token.ts`; ими же подписывает тестовый помощник `authHeader(user)`.
+
+- В базе хранится sha256 от строки токена, как её прислал клиент: мусор на входе просто не находится.
+- Обновление — одна транзакция: строка токена берётся `FOR UPDATE`, затем либо `used_at` и следующий токен той же семьи (срок 30 дней отсчитывается заново), либо отказ. Неизвестный, отозванный и истёкший токен — 401 `UNICORE_AUTH_REQUIRED`.
+- При повторе отзыв семьи коммитится, и только потом сервис бросает 401: ошибка внутри транзакции откатила бы отзыв. Повтор пишется в лог `warn` с id сессии и пользователя, без токена.
+- Два одновременных обновления одним токеном идут по очереди из-за блокировки строки, и второе выглядит как повтор: сессия отзывается. Поэтому клиент обновляет токен один раз на все запросы, получившие 401.
+- Выход (`revoke`) отзывает семью предъявленного токена; неизвестный токен молча пропускается, чтобы выход был идемпотентным.
+- Токен доступа проверяется только как HS256 с обязательными `sub` и `exp`; любая ошибка проверки — 401 `UNICORE_AUTH_REQUIRED`.
+
 ### Регистрация и подтверждение почты
 
 ```mermaid
@@ -559,7 +568,7 @@ sequenceDiagram
 | `DATABASE_URL`                    | —                       | Postgres (`postgres://` или `postgresql://`); пустая или не заданная — PGlite в `PGLITE_DIR`. Для разработки — `docker-compose.dev.yml` |
 | `PGLITE_DIR`                      | `.local/pgdata`         | файлы PGlite для разработки, путь от текущего каталога (`apps/api` у скриптов `npm -w`); `memory://` — база в памяти, так в тестах      |
 | `JWT_SECRET`                      | обязательна             | подпись токенов доступа, не короче 32 символов                                                                                          |
-| `ACCESS_TTL`, `REFRESH_TTL`       | `15m`, `30d`            | сроки токенов; для проверки 7.7 — `ACCESS_TTL=60s`                                                                                      |
+| `ACCESS_TTL`, `REFRESH_TTL`       | `15m`, `30d`            | сроки токенов: целое и `s`, `m`, `h` или `d`, без единицы — секунды; для проверки 7.7 — `ACCESS_TTL=60s`                                |
 | `FILES_SECRET`                    | обязательна             | подпись ссылок на фото, отдельно от `JWT_SECRET`                                                                                        |
 | `PUBLIC_BASE_URL`                 | `http://localhost:3000` | адрес в ссылках на фото и в письмах                                                                                                     |
 | `PHOTOS_DIR`                      | `.local/photos`         | каталог файлов                                                                                                                          |
@@ -608,7 +617,8 @@ apps/api/
     db/                 schema.ts; database.ts — открытие Postgres или PGlite, миграции при старте, тип Db;
                         database.module.ts — DatabaseModule поверх DrizzleModule из @nestjs/drizzle
     auth/               password.ts — argon2id и минимальная длина; users.service.ts — аккаунт с профилем одной транзакцией;
-                        позже — контроллер, токены, подтверждение почты, guards
+                        access-token.ts — подпись и проверка JWT доступа; tokens.service.ts — сессии и ротация refresh-токенов;
+                        позже — контроллер, подтверждение почты, guards
     profile/
     activities/
     rooms/
@@ -621,7 +631,7 @@ apps/api/
     cli/                admin-grant.ts, admin-revoke.ts, photos-cleanup.ts
   seed/                 сидер и наборы (этап 6)
   drizzle/              сгенерированные SQL-миграции
-  test/                 e2e-тесты; app.ts — createTestApp, users.ts — createUser (пароль testPassword); authHeader — с 3.2
+  test/                 e2e-тесты; app.ts — createTestApp, users.ts — createUser (пароль testPassword) и authHeader
   drizzle.config.ts
   nest-cli.json
   vitest.config.ts

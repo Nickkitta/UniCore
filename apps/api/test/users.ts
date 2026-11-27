@@ -1,5 +1,7 @@
 import { type AccountKind, normalizeEmail } from '@unicore/shared';
+import { accessTokenKey, signAccessToken } from '../src/auth/access-token.js';
 import { hashPassword } from '../src/auth/password.js';
+import { envSchema } from '../src/config/env.js';
 import type { Db } from '../src/db/database.js';
 import { admins, profiles, users } from '../src/db/schema.js';
 
@@ -66,4 +68,19 @@ export async function createUser(db: Db, options: TestUserOptions = {}): Promise
   });
 
   return { id, email, kind, password: testPassword };
+}
+
+/**
+ * `Authorization: Bearer <access token>` for the user: `.set(await authHeader(user))`.
+ * Signed by the server's code with JWT_SECRET and ACCESS_TTL parsed from the same variables
+ * as the app's (vitest.config.e2e.ts), so the app accepts it.
+ */
+export async function authHeader(user: { id: string }): Promise<{ Authorization: string }> {
+  const env = envSchema.parse(process.env);
+  const token = await signAccessToken({
+    key: accessTokenKey(env.JWT_SECRET),
+    userId: user.id,
+    ttlSeconds: env.ACCESS_TTL,
+  });
+  return { Authorization: `Bearer ${token}` };
 }

@@ -17,6 +17,8 @@ describe('envSchema', () => {
     expect(envSchema.parse({ JWT_SECRET: secret })).toEqual({
       PORT: 3000,
       JWT_SECRET: secret,
+      ACCESS_TTL: 900,
+      REFRESH_TTL: 2_592_000,
       CORS_ORIGINS: ['http://localhost:8081'],
       TRUST_PROXY: false,
       PGLITE_DIR: '.local/pgdata',
@@ -59,4 +61,32 @@ describe('envSchema', () => {
     );
     expect(envSchema.safeParse({ JWT_SECRET: secret, TRUST_PROXY: 'true' }).success).toBe(false);
   });
+
+  it('turns token lifetimes into seconds', () => {
+    const env = envSchema.parse({ JWT_SECRET: secret, ACCESS_TTL: '60s', REFRESH_TTL: '12h' });
+    expect(env.ACCESS_TTL).toBe(60);
+    expect(env.REFRESH_TTL).toBe(43_200);
+    expect(envSchema.parse({ JWT_SECRET: secret, ACCESS_TTL: '900' }).ACCESS_TTL).toBe(900);
+  });
+
+  it('parses again what ConfigModule writes back to process.env', () => {
+    // ConfigModule copies parsed strings, numbers and booleans into process.env; a second
+    // parse (the tests' authHeader, another app in the same process) must give the same values.
+    const first = envSchema.parse({ JWT_SECRET: secret });
+    const written = Object.fromEntries(
+      Object.entries(first)
+        .filter(([, value]) => ['string', 'number', 'boolean'].includes(typeof value))
+        .map(([key, value]) => [key, String(value)]),
+    );
+    expect(envSchema.parse(written)).toEqual(first);
+  });
+
+  it.each(['0', '0m', 'abc', '1w', '15 m', '-5m', '1.5h', ''])(
+    'names ACCESS_TTL when it is %j',
+    (value) => {
+      const result = envSchema.safeParse({ JWT_SECRET: secret, ACCESS_TTL: value });
+      expect(result.success).toBe(false);
+      expect(result.error?.issues.map((issue) => issue.path.join('.'))).toEqual(['ACCESS_TTL']);
+    },
+  );
 });
