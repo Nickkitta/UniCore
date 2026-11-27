@@ -3,7 +3,7 @@ import { InjectDrizzle } from '@nestjs/drizzle';
 import { type AccountKind, normalizeEmail } from '@unicore/shared';
 import { eq } from 'drizzle-orm';
 import { DomainError } from '../common/domain-error.js';
-import type { Db } from '../db/database.js';
+import type { Db, Tx } from '../db/database.js';
 import { profiles, users } from '../db/schema.js';
 import {
   assertStrongPassword,
@@ -37,9 +37,13 @@ export class UsersService implements OnModuleInit {
 
   /**
    * Creates a student with a profile in one transaction. Throws UNICORE_WEAK_PASSWORD
-   * and UNICORE_EMAIL_TAKEN; the email is stored normalized.
+   * and UNICORE_EMAIL_TAKEN; the email is stored normalized. `inTransaction` runs in the same
+   * transaction after the profile (the email confirmation link): if it throws, there is no account.
    */
-  async create(account: NewAccount): Promise<{ id: string; email: string }> {
+  async create(
+    account: NewAccount,
+    inTransaction?: (tx: Tx, userId: string) => Promise<void>,
+  ): Promise<{ id: string; email: string }> {
     const email = normalizeEmail(account.email);
     assertStrongPassword(account.password);
     // Hashing takes tens of milliseconds: done before the transaction, not inside it.
@@ -55,6 +59,7 @@ export class UsersService implements OnModuleInit {
         .returning({ id: users.id });
       if (!user) throw new DomainError('UNICORE_EMAIL_TAKEN');
       await tx.insert(profiles).values({ id: user.id, accountKind: 'student', name: account.name });
+      await inTransaction?.(tx, user.id);
       return user.id;
     });
 
@@ -62,15 +67,16 @@ export class UsersService implements OnModuleInit {
   }
 
   /**
-   * The id of the user the credentials belong to. A wrong password and an unknown email both
-   * throw UNICORE_INVALID_CREDENTIALS and take the same time; an account of another kind than
-   * the portal throws UNICORE_WRONG_PORTAL.
+   * The user the credentials belong to. A wrong password and an unknown email both throw
+   * UNICORE_INVALID_CREDENTIALS and take the same time; an account of another kind than the
+   * portal throws UNICORE_WRONG_PORTAL. Whether an unconfirmed email may sign in is up to the caller.
    */
-  async authenticate(credentials: Credentials): Promise<string> {
+  async authenticate(credentials: Credentials): Promise<{ id: string; emailVerified: boolean }> {
     const rows = await this.db
       .select({
         id: users.id,
         passwordHash: users.passwordHash,
+        emailVerifiedAt: users.emailVerifiedAt,
         accountKind: profiles.accountKind,
       })
       .from(users)
@@ -82,6 +88,6 @@ export class UsersService implements OnModuleInit {
     if (!user || !valid) throw new DomainError('UNICORE_INVALID_CREDENTIALS');
     // Only after the password: otherwise anyone could learn the kind of an account by its email.
     if (user.accountKind !== credentials.portal) throw new DomainError('UNICORE_WRONG_PORTAL');
-    return user.id;
+    return { id: user.id, emailVerified: user.emailVerifiedAt !== null };
   }
 }

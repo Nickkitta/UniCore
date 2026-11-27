@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { decodeJwt } from 'jose';
 import { TokensService } from '../src/auth/tokens.service.js';
-import { profiles, refreshTokens, users } from '../src/db/schema.js';
+import { emailTokens, profiles, refreshTokens, users } from '../src/db/schema.js';
 import { createTestApp, type TestApp } from './app.js';
 import { createUser, testPassword } from './users.js';
 
@@ -46,6 +46,12 @@ describe('/v1/auth', () => {
       expect(user.email).toBe('new@example.test');
       const [profile] = await t.db.select().from(profiles).where(eq(profiles.id, userId));
       expect(profile).toMatchObject({ accountKind: 'student', name: 'Аня' });
+
+      // AUTH_REQUIRE_EMAIL_VERIFICATION is off by default: no confirmation link, no mail.
+      expect(await t.db.select().from(emailTokens).where(eq(emailTokens.userId, userId))).toEqual(
+        [],
+      );
+      expect(t.mailbox.mails).toEqual([]);
     });
 
     it('rejects a short password: 422 UNICORE_WEAK_PASSWORD', async () => {

@@ -6,11 +6,9 @@ import type { Tokens } from '@unicore/shared';
 import { and, eq, isNull } from 'drizzle-orm';
 import { DomainError } from '../common/domain-error.js';
 import type { Env } from '../config/env.js';
-import type { Db } from '../db/database.js';
+import type { Db, Tx } from '../db/database.js';
 import { refreshTokens } from '../db/schema.js';
 import { accessTokenKey, signAccessToken, verifyAccessToken } from './access-token.js';
-
-type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
 
 /** 32 random bytes in base64url: what the client keeps and sends back. */
 export function newRefreshToken(): string {

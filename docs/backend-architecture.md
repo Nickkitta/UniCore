@@ -111,18 +111,18 @@ flowchart TB
 
 `AppModule` импортирует все модули; стрелки — зависимости между функциональными модулями. Циклов нет: проверка прав администратора — отдельный guard в `AdminModule`, а `AuthModule` берёт у него только `PartnerCodesService`.
 
-| Модуль             | Отвечает за                                                            | Адреса                                                                                      | Пишет в таблицы                                                         |
-| ------------------ | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| `AuthModule`       | регистрация, вход, токены, подтверждение почты, глобальный `AuthGuard` | `/v1/auth/*`                                                                                | `users`, `profiles` (при регистрации), `refresh_tokens`, `email_tokens` |
-| `ProfileModule`    | свой профиль и тема                                                    | `PATCH /v1/profile`                                                                         | `profiles`                                                              |
-| `ActivitiesModule` | создание событий, запись и отмена, закладки                            | `POST /v1/activities`, `PUT …/membership`, `PUT …/saved`                                    | `activities`, `participants`, `saved`, `photos` (привязка)              |
-| `RoomsModule`      | комната события: состав, сообщения, помощники, исключение              | `GET …/room`, `POST …/messages`, `PUT …/members/:userId/cohost`, `DELETE …/members/:userId` | `messages`, `exclusions`, `participants`, `saved`                       |
-| `PhotosModule`     | загрузка, подписанные ссылки, раздача файлов, уборка                   | `POST /v1/photos`, `GET /v1/files/:id`                                                      | `photos`, файлы                                                         |
-| `SnapshotModule`   | сборка снимка, только чтение                                           | `GET /v1/snapshot`                                                                          | —                                                                       |
-| `AdminModule`      | промокоды партнёров, `AdminGuard`                                      | `POST /v1/admin/partner-codes`                                                              | `admins`, `partner_codes`                                               |
-| `HealthModule`     | проверка живости сервера и базы                                        | `GET /v1/health`                                                                            | —                                                                       |
-| `MailModule`       | письма: в консоль при разработке, SMTP в проде                         | —                                                                                           | —                                                                       |
-| `StorageModule`    | `put` / `get` / `delete` файлов: диск или память в тестах              | —                                                                                           | —                                                                       |
+| Модуль                        | Отвечает за                                                                        | Адреса                                                                                      | Пишет в таблицы                                                         |
+| ----------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `AuthModule`                  | регистрация, вход, токены, подтверждение почты, глобальный `AuthGuard`             | `/v1/auth/*`                                                                                | `users`, `profiles` (при регистрации), `refresh_tokens`, `email_tokens` |
+| `ProfileModule`               | свой профиль и тема                                                                | `PATCH /v1/profile`                                                                         | `profiles`                                                              |
+| `ActivitiesModule`            | создание событий, запись и отмена, закладки                                        | `POST /v1/activities`, `PUT …/membership`, `PUT …/saved`                                    | `activities`, `participants`, `saved`, `photos` (привязка)              |
+| `RoomsModule`                 | комната события: состав, сообщения, помощники, исключение                          | `GET …/room`, `POST …/messages`, `PUT …/members/:userId/cohost`, `DELETE …/members/:userId` | `messages`, `exclusions`, `participants`, `saved`                       |
+| `PhotosModule`                | загрузка, подписанные ссылки, раздача файлов, уборка                               | `POST /v1/photos`, `GET /v1/files/:id`                                                      | `photos`, файлы                                                         |
+| `SnapshotModule`              | сборка снимка, только чтение                                                       | `GET /v1/snapshot`                                                                          | —                                                                       |
+| `AdminModule`                 | промокоды партнёров, `AdminGuard`                                                  | `POST /v1/admin/partner-codes`                                                              | `admins`, `partner_codes`                                               |
+| `HealthModule`                | проверка живости сервера и базы                                                    | `GET /v1/health`                                                                            | —                                                                       |
+| `MailModule` (`@nestjs/mail`) | письма: в лог при разработке, SMTP в проде; настройка — `src/mail/mail.options.ts` | —                                                                                           | —                                                                       |
+| `StorageModule`               | `put` / `get` / `delete` файлов: диск или память в тестах                          | —                                                                                           | —                                                                       |
 
 Таблицы `organizations` и `groups` пишет только сидер (этап 6), адресов для них нет.
 
@@ -238,7 +238,7 @@ sequenceDiagram
 
 Адреса — `AuthController` (`src/auth/auth.controller.ts`): `sign-up` отвечает 201, `sign-in` и `refresh` — 200 с парой токенов, `sign-out` — 204 без тела. Регистрацию и вход ведёт `AuthService`, обновление и выход — `TokensService`.
 
-- Вход проверяет по порядку: пароль, портал, подтверждение почты (3.4). Пароль идёт первым, иначе по одной почте можно было бы узнать тип аккаунта.
+- Вход проверяет по порядку: пароль, портал, подтверждение почты — только при `AUTH_REQUIRE_EMAIL_VERIFICATION=true`, неподтверждённая почта даёт 403 `UNICORE_EMAIL_NOT_CONFIRMED`. Пароль идёт первым, иначе по одной почте можно было бы узнать тип аккаунта.
 - Неверный пароль и неизвестная почта дают одно и то же 401 `UNICORE_INVALID_CREDENTIALS`. Для неизвестной почты пароль проверяется против хеша случайной строки с теми же параметрами argon2id (`verifyPasswordOrDummy` в `src/auth/password.ts`); `UsersService` вычисляет его при старте, поэтому и первый вход отвечает не быстрее обычного.
 - Аккаунт другого типа, чем портал, — 403 `UNICORE_WRONG_PORTAL`; сессия не создаётся.
 - Каждый вход открывает новую семью refresh-токенов: на двух устройствах — две независимые сессии.
@@ -290,6 +290,14 @@ sequenceDiagram
     API-->>App: HTML «Почта подтверждена»
   end
 ```
+
+Код — `EmailVerificationService` (`src/auth/email-verification.service.ts`) и страница `src/auth/verify-page.ts`.
+
+- Токен ссылки — 32 случайных байта в base64url; в `email_tokens` — sha256, назначение `verify_email`, срок 24 часа. При регистрации он пишется в той же транзакции, что аккаунт и профиль (колбэк `inTransaction` у `UsersService.create`).
+- Письмо уходит в фоне после коммита: ответ не ждёт SMTP, а время ответа не выдаёт, есть ли аккаунт. Ошибка отправки пишется в лог с id пользователя, без ссылки; пользователь просит письмо ещё раз. Ссылка строится из `PUBLIC_BASE_URL`.
+- `GET /v1/auth/verify` — страница для браузера: подтверждено — 200 «Почта подтверждена»; почта уже подтверждена (повторный переход или почтовый сканер, открывший ссылку первым) — 200 «Почта уже подтверждена», ничего не меняется; ссылка просрочена — 410; неизвестна — 404. Без `token` — 422 JSON по схеме контракта. Заголовки `Cache-Control: no-store` и `Referrer-Policy: no-referrer` — адрес содержит токен.
+- `POST /v1/auth/resend-verification` всегда отвечает 204. Новое письмо уходит, только если аккаунт есть, почта не подтверждена и последней ссылке больше минуты; строка пользователя берётся `FOR UPDATE`, поэтому из одновременных запросов письмо одно. Старые ссылки работают до своего срока.
+- Почта — пакет `@nestjs/mail`, настройка в `src/mail/mail.options.ts`: `MAIL_TRANSPORT=smtp` — `SmtpTransport` по `SMTP_URL`, `console` — `LogMailTransport`, которому передан логгер, поднимающий текст письма с `debug` до `log`, иначе при `LOG_LEVEL=info` ссылки в консоли не видно. В тестах `createTestApp()` подменяет транспорт на `InMemoryMailTransport` (`mailbox`).
 
 ### Доступ к адресам
 
@@ -569,22 +577,22 @@ sequenceDiagram
 
 Переменные проверяются zod-схемой при старте; без обязательной сервер не запускается и называет её.
 
-| Переменная                        | По умолчанию            | Назначение                                                                                                                              |
-| --------------------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `PORT`                            | `3000`                  | порт HTTP                                                                                                                               |
-| `DATABASE_URL`                    | —                       | Postgres (`postgres://` или `postgresql://`); пустая или не заданная — PGlite в `PGLITE_DIR`. Для разработки — `docker-compose.dev.yml` |
-| `PGLITE_DIR`                      | `.local/pgdata`         | файлы PGlite для разработки, путь от текущего каталога (`apps/api` у скриптов `npm -w`); `memory://` — база в памяти, так в тестах      |
-| `JWT_SECRET`                      | обязательна             | подпись токенов доступа, не короче 32 символов                                                                                          |
-| `ACCESS_TTL`, `REFRESH_TTL`       | `15m`, `30d`            | сроки токенов: целое и `s`, `m`, `h` или `d`, без единицы — секунды; для проверки 7.7 — `ACCESS_TTL=60s`                                |
-| `FILES_SECRET`                    | обязательна             | подпись ссылок на фото, отдельно от `JWT_SECRET`                                                                                        |
-| `PUBLIC_BASE_URL`                 | `http://localhost:3000` | адрес в ссылках на фото и в письмах                                                                                                     |
-| `PHOTOS_DIR`                      | `.local/photos`         | каталог файлов                                                                                                                          |
-| `AUTH_REQUIRE_EMAIL_VERIFICATION` | `false`                 | вход только после подтверждения почты                                                                                                   |
-| `MAIL_TRANSPORT`                  | `console`               | `console` или `smtp`                                                                                                                    |
-| `SMTP_URL`, `MAIL_FROM`           | —                       | обязательны при `MAIL_TRANSPORT=smtp`                                                                                                   |
-| `CORS_ORIGINS`                    | `http://localhost:8081` | откуда разрешены запросы из браузера (Expo web, Playwright)                                                                             |
-| `TRUST_PROXY`                     | `false`                 | за Caddy — адрес прокси для Express `trust proxy` (`uniquelocal`, подсеть), чтобы лимиты считались по IP клиента; `true` отклоняется    |
-| `LOG_LEVEL`                       | `info`                  | уровень pino                                                                                                                            |
+| Переменная                        | По умолчанию            | Назначение                                                                                                                                                                                          |
+| --------------------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PORT`                            | `3000`                  | порт HTTP                                                                                                                                                                                           |
+| `DATABASE_URL`                    | —                       | Postgres (`postgres://` или `postgresql://`); пустая или не заданная — PGlite в `PGLITE_DIR`. Для разработки — `docker-compose.dev.yml`                                                             |
+| `PGLITE_DIR`                      | `.local/pgdata`         | файлы PGlite для разработки, путь от текущего каталога (`apps/api` у скриптов `npm -w`); `memory://` — база в памяти, так в тестах                                                                  |
+| `JWT_SECRET`                      | обязательна             | подпись токенов доступа, не короче 32 символов                                                                                                                                                      |
+| `ACCESS_TTL`, `REFRESH_TTL`       | `15m`, `30d`            | сроки токенов: целое и `s`, `m`, `h` или `d`, без единицы — секунды; для проверки 7.7 — `ACCESS_TTL=60s`                                                                                            |
+| `FILES_SECRET`                    | обязательна             | подпись ссылок на фото, отдельно от `JWT_SECRET`                                                                                                                                                    |
+| `PUBLIC_BASE_URL`                 | `http://localhost:3000` | адрес в ссылках на фото и в письмах                                                                                                                                                                 |
+| `PHOTOS_DIR`                      | `.local/photos`         | каталог файлов                                                                                                                                                                                      |
+| `AUTH_REQUIRE_EMAIL_VERIFICATION` | `false`                 | вход только после подтверждения почты                                                                                                                                                               |
+| `MAIL_TRANSPORT`                  | `console`               | `console` — письма в лог (разработка), `smtp` — отправка через `SMTP_URL`                                                                                                                           |
+| `SMTP_URL`, `MAIL_FROM`           | —                       | обязательны при `MAIL_TRANSPORT=smtp`: `smtp://user:password@host:587` или `smtps://…`; отправитель `Имя <адрес>`. Пустые — не заданы; при `console` отправитель — `UniCore <no-reply@example.com>` |
+| `CORS_ORIGINS`                    | `http://localhost:8081` | откуда разрешены запросы из браузера (Expo web, Playwright)                                                                                                                                         |
+| `TRUST_PROXY`                     | `false`                 | за Caddy — адрес прокси для Express `trust proxy` (`uniquelocal`, подсеть), чтобы лимиты считались по IP клиента; `true` отклоняется                                                                |
+| `LOG_LEVEL`                       | `info`                  | уровень pino                                                                                                                                                                                        |
 
 Шаблон — `apps/api/.env.example`; настоящие значения лежат только на сервере.
 
@@ -621,12 +629,13 @@ apps/api/
     config/env.ts       zod-схема окружения и тип Env
     common/             InputValidationPipe, DomainError, ApiExceptionFilter, logger.params.ts (pino-http и маскировка),
                         позже — @Public, @CurrentUser, @AdminOnly
-    db/                 schema.ts; database.ts — открытие Postgres или PGlite, миграции при старте, тип Db;
+    db/                 schema.ts; database.ts — открытие Postgres или PGlite, миграции при старте, типы Db и Tx;
                         database.module.ts — DatabaseModule поверх DrizzleModule из @nestjs/drizzle
     auth/               password.ts — argon2id, минимальная длина, проверка с заглушкой; users.service.ts — аккаунт с профилем
                         одной транзакцией и проверка пароля и портала; access-token.ts — подпись и проверка JWT доступа;
-                        tokens.service.ts — сессии и ротация refresh-токенов; auth.service.ts — регистрация и вход;
-                        auth.controller.ts — /v1/auth/*; позже — подтверждение почты, guards
+                        tokens.service.ts — сессии и ротация refresh-токенов; email-verification.service.ts — ссылки
+                        подтверждения, письма, повторная отправка; verify-page.ts — HTML-страница ссылки;
+                        auth.service.ts — регистрация и вход; auth.controller.ts — /v1/auth/*; позже — guards
     profile/
     activities/
     rooms/
@@ -634,12 +643,13 @@ apps/api/
     storage/            драйверы диска и памяти
     snapshot/           сервис и snapshot.queries.ts
     admin/              промокоды, AdminGuard
-    mail/
+    mail/               mail.options.ts — транспорт @nestjs/mail из MAIL_TRANSPORT: SMTP или лог
     health/
     cli/                admin-grant.ts, admin-revoke.ts, photos-cleanup.ts
   seed/                 сидер и наборы (этап 6)
   drizzle/              сгенерированные SQL-миграции
-  test/                 e2e-тесты; app.ts — createTestApp, users.ts — createUser (пароль testPassword) и authHeader
+  test/                 e2e-тесты; app.ts — createTestApp (с mailbox — InMemoryMailTransport), users.ts — createUser
+                        (пароль testPassword) и authHeader
   drizzle.config.ts
   nest-cli.json
   vitest.config.ts

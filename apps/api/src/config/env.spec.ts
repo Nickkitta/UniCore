@@ -23,7 +23,56 @@ describe('envSchema', () => {
       TRUST_PROXY: false,
       PGLITE_DIR: '.local/pgdata',
       LOG_LEVEL: 'info',
+      AUTH_REQUIRE_EMAIL_VERIFICATION: false,
+      PUBLIC_BASE_URL: 'http://localhost:3000',
+      MAIL_TRANSPORT: 'console',
     });
+  });
+
+  it('reads the email verification flag as true or false only', () => {
+    const parse = (value: string) =>
+      envSchema.safeParse({ JWT_SECRET: secret, AUTH_REQUIRE_EMAIL_VERIFICATION: value });
+    expect(parse('true').data?.AUTH_REQUIRE_EMAIL_VERIFICATION).toBe(true);
+    expect(parse('false').data?.AUTH_REQUIRE_EMAIL_VERIFICATION).toBe(false);
+    expect(parse('yes').success).toBe(false);
+  });
+
+  it('takes the base of email links without a trailing slash', () => {
+    const parse = (value: string) =>
+      envSchema.safeParse({ JWT_SECRET: secret, PUBLIC_BASE_URL: value });
+    expect(parse('https://api.unicore.example/').data?.PUBLIC_BASE_URL).toBe(
+      'https://api.unicore.example',
+    );
+    expect(parse('http://192.168.1.20:3000').data?.PUBLIC_BASE_URL).toBe(
+      'http://192.168.1.20:3000',
+    );
+    expect(parse('ftp://unicore.example').success).toBe(false);
+  });
+
+  it('needs SMTP_URL and MAIL_FROM to send mail through SMTP', () => {
+    const missing = envSchema.safeParse({ JWT_SECRET: secret, MAIL_TRANSPORT: 'smtp' });
+    expect(missing.error?.issues.map((issue) => issue.path.join('.'))).toEqual([
+      'SMTP_URL',
+      'MAIL_FROM',
+    ]);
+
+    const smtp = {
+      JWT_SECRET: secret,
+      MAIL_TRANSPORT: 'smtp',
+      SMTP_URL: 'smtps://user:secret@smtp.example.com',
+      MAIL_FROM: 'UniCore <no-reply@unicore.example>',
+    };
+    expect(envSchema.parse(smtp)).toMatchObject({
+      SMTP_URL: smtp.SMTP_URL,
+      MAIL_FROM: smtp.MAIL_FROM,
+    });
+    expect(envSchema.safeParse({ ...smtp, SMTP_URL: 'https://smtp.example.com' }).success).toBe(
+      false,
+    );
+    // Empty values, as in .env.example, mean "not set".
+    expect(envSchema.safeParse({ ...smtp, MAIL_FROM: '' }).success).toBe(false);
+    const unset = envSchema.parse({ JWT_SECRET: secret, SMTP_URL: '', MAIL_FROM: '' });
+    expect([unset.SMTP_URL, unset.MAIL_FROM]).toEqual([undefined, undefined]);
   });
 
   it('accepts only pino log levels', () => {

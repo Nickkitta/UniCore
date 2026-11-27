@@ -12,6 +12,9 @@ import { Pool } from 'pg';
 /** The database the services work with: Postgres or PGlite, the same API for both. */
 export type Db = PgAsyncDatabase<PgQueryResultHKT>;
 
+/** The transaction `db.transaction()` passes to its callback; helpers of one scenario take it. */
+export type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
+
 /** SQL migrations made by drizzle-kit; the same path from src/db and from dist/db. */
 export const migrationsFolder = path.join(import.meta.dirname, '../../drizzle');
 

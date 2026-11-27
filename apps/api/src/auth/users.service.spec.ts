@@ -109,6 +109,20 @@ describe('UsersService.create', () => {
     ).rejects.toThrow();
     expect(await usersWithEmail('long@example.test')).toEqual([]);
   });
+
+  it('runs inTransaction in the same transaction: if it throws, there is no account', async () => {
+    let seen: string | undefined;
+    await expect(
+      service.create({ email: 'hook@example.test', password, name: 'Аня' }, async (tx, userId) => {
+        seen = userId;
+        const [user] = await tx.select().from(users).where(eq(users.id, userId));
+        expect(user.email).toBe('hook@example.test');
+        throw new Error('the link could not be stored');
+      }),
+    ).rejects.toThrow('the link could not be stored');
+    expect(seen).toBeDefined();
+    expect(await usersWithEmail('hook@example.test')).toEqual([]);
+  });
 });
 
 describe('UsersService.authenticate', () => {
@@ -120,7 +134,7 @@ describe('UsersService.authenticate', () => {
         password: testPassword,
         portal: 'student',
       }),
-    ).toBe(user.id);
+    ).toEqual({ id: user.id, emailVerified: true });
   });
 
   it('answers a wrong password and an unknown email alike: UNICORE_INVALID_CREDENTIALS, 401', async () => {
@@ -168,7 +182,14 @@ describe('UsersService.authenticate', () => {
         password: testPassword,
         portal: 'partner',
       }),
-    ).toBe(partner.id);
+    ).toEqual({ id: partner.id, emailVerified: true });
+  });
+
+  it('tells whether the email is confirmed and leaves the decision to the caller', async () => {
+    const user = await createUser(db, { verified: false });
+    expect(
+      await service.authenticate({ email: user.email, password: testPassword, portal: 'student' }),
+    ).toEqual({ id: user.id, emailVerified: false });
   });
 
   it('checks the password before the portal, so the kind of an account stays hidden', async () => {
