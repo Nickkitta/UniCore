@@ -1,5 +1,5 @@
-import { InviteInput } from './models';
-import { eventTags } from './catalog';
+import type { InviteInput } from './models.ts';
+import { eventTags } from './catalog.ts';
 
 export function validateInvite(input: InviteInput, now = Date.now()): string | null {
   if (

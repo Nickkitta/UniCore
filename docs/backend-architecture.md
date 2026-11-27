@@ -47,12 +47,23 @@ flowchart LR
   mobile -. "HTTP /v1" .-> api
 ```
 
-`packages/shared` не зависит ни от Expo и React Native, ни от Nest и Node API — только TypeScript и zod. Контракт ложится рядом с уже перенесёнными файлами:
+`packages/shared` не зависит ни от Expo и React Native, ни от Nest и Node API — только TypeScript и zod.
+
+Пакет не собирается: Metro и Vitest компилируют его исходники сами, а собранный сервер (`node dist/main.js`) импортирует `.ts`-файлы пакета, и Node снимает с них типы сам (type stripping, без флагов с Node 22.18). Отсюда правила для кода пакета:
+
+- относительные импорты пишутся с `.ts`;
+- типы импортируются через `import type`;
+- только стираемый синтаксис: без `enum`, `namespace` и параметров-свойств.
+
+Правила проверяют `erasableSyntaxOnly` и `verbatimModuleSyntax` в его `tsconfig.json`. Node не снимает типы с файлов внутри `node_modules`; workspace-симлинк ведёт в `packages/shared`, поэтому в образе сервера пакет должен остаться workspace, а не копией в `node_modules`. Бандлер (rspack) отвергнут в задаче 2.2: лишний сборщик ради одного пакета.
+
+Контракт ложится рядом с уже перенесёнными файлами:
 
 ```text
 packages/shared/src/
   models.ts catalog.ts invite.ts errors.ts   уже есть
   api/
+    prefix.ts      apiPrefix = 'v1', уже есть
     auth.ts        sign-in, sign-up, refresh, ответ с токенами
     profile.ts     PATCH /v1/profile
     activities.ts  создание события, запись, закладки

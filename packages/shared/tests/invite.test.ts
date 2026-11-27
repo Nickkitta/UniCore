@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { InviteInput, parseLocalDate, validateInvite } from '../src';
+import { type InviteInput, parseLocalDate, validateInvite } from '../src/index.ts';
 
 const input = (): InviteInput => ({
   title: 'Кофе после пар',

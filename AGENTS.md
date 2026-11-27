@@ -13,7 +13,7 @@ Expo ships breaking changes every SDK release. APIs you remember are likely rena
 This is an npm workspaces monorepo:
 
 - `apps/mobile` — the Expo app (`@unicore/mobile`). All Expo and EAS paths below are relative to it.
-- `packages/shared` — `@unicore/shared`: domain models, catalog, invite validation and error codes. Shipped as TypeScript sources without a build step; the server will use it too, so it must not depend on Expo, React Native or Nest.
+- `packages/shared` — `@unicore/shared`: domain models, catalog, invite validation and error codes. Shipped as TypeScript sources without a build step; the server uses it too, so it must not depend on Expo, React Native or Nest. The built server runs these files with Node's type stripping, so relative imports end in `.ts`, types are imported with `import type`, and only erasable syntax is allowed (no `enum`, `namespace` or parameter properties).
 - `apps/api` — the NestJS 12 server (`@unicore/api`), being built stage by stage (see "Backend migration" below).
 - Root `supabase/`, `scripts/seed*.mjs` and `tests/` — the current Supabase backend and its tests; they stay until stage 9 of the migration.
 
