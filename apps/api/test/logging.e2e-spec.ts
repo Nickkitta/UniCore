@@ -1,13 +1,9 @@
 import { Writable } from 'node:stream';
 import { Body, Controller, Get, HttpCode, Logger, Post } from '@nestjs/common';
-import type { NestExpressApplication } from '@nestjs/platform-express';
-import { Test } from '@nestjs/testing';
 import { PARAMS_PROVIDER_TOKEN } from 'nestjs-pino';
-import request from 'supertest';
-import { AppModule } from '../src/app.module.js';
-import { configureApp } from '../src/app.setup.js';
 import { DomainError } from '../src/common/domain-error.js';
 import { loggerParams } from '../src/common/logger.params.js';
+import { createTestApp, type TestApp } from './app.js';
 
 // This file builds a single app: nestjs-pino keeps one pino-http instance per process,
 // made from the params of the first app, so a second app here would log to the same stream.
@@ -63,26 +59,21 @@ describe('logging', () => {
       return line;
     });
 
-  let app: NestExpressApplication;
+  let t: TestApp;
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
+    t = await createTestApp({
       controllers: [ProbeController],
-    })
-      .overrideProvider(PARAMS_PROVIDER_TOKEN)
-      .useValue(loggerParams('info', sink))
-      .compile();
-    app = moduleRef.createNestApplication<NestExpressApplication>();
-    configureApp(app);
-    await app.init();
+      override: (builder) =>
+        builder.overrideProvider(PARAMS_PROVIDER_TOKEN).useValue(loggerParams('info', sink)),
+    });
   });
 
   afterAll(async () => {
-    await app.close();
+    await t.close();
   });
 
-  const http = () => request(app.getHttpServer());
+  const http = () => t.http();
 
   it('masks the token header, URL secrets and secret fields of logged objects', async () => {
     const response = await http()

@@ -618,7 +618,7 @@ apps/api/
     cli/                admin-grant.ts, admin-revoke.ts, photos-cleanup.ts
   seed/                 сидер и наборы (этап 6)
   drizzle/              сгенерированные SQL-миграции
-  test/                 createTestApp, createUser, authHeader
+  test/                 e2e-тесты; app.ts — createTestApp, users.ts — createUser; authHeader — с 3.2
   drizzle.config.ts
   nest-cli.json
   vitest.config.ts

@@ -8,13 +8,9 @@ import {
   PayloadTooLargeException,
   Post,
 } from '@nestjs/common';
-import type { NestExpressApplication } from '@nestjs/platform-express';
-import { Test } from '@nestjs/testing';
 import { errorMessages } from '@unicore/shared';
-import request from 'supertest';
-import { AppModule } from '../src/app.module.js';
-import { configureApp } from '../src/app.setup.js';
 import { DomainError } from '../src/common/domain-error.js';
+import { createTestApp, type TestApp } from './app.js';
 
 /** Throws what services, guards and Nest packages throw in stages 3–5. */
 @Controller('test-errors')
@@ -54,23 +50,17 @@ class ProbeController {
 }
 
 describe('errors', () => {
-  let app: NestExpressApplication;
+  let t: TestApp;
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
-      controllers: [ProbeController],
-    }).compile();
-    app = moduleRef.createNestApplication<NestExpressApplication>();
-    configureApp(app);
-    await app.init();
+    t = await createTestApp({ controllers: [ProbeController] });
   });
 
   afterAll(async () => {
-    await app.close();
+    await t.close();
   });
 
-  const http = () => request(app.getHttpServer());
+  const http = () => t.http();
 
   it('answers an unknown route with 404 UNICORE_NOT_FOUND', async () => {
     const response = await http().get('/v1/nope').expect(404);

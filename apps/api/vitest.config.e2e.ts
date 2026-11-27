@@ -6,6 +6,9 @@ export default defineConfig({
     globals: true,
     root: './',
     include: ['test/**/*.e2e-spec.ts'],
+    // createTestApp() boots PGlite (Postgres in WASM) and runs the migrations. With every file
+    // doing it at once on a cold start, two apps in one hook took more than the default 10 s.
+    hookTimeout: 30_000,
     // The app never reads a developer's .env in tests (see app.module.ts).
     env: {
       NODE_ENV: 'test',

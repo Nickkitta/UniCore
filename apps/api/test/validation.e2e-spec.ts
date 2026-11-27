@@ -1,6 +1,4 @@
 import { Body, Controller, HttpCode, Param, Post, Query } from '@nestjs/common';
-import type { NestExpressApplication } from '@nestjs/platform-express';
-import { Test } from '@nestjs/testing';
 import {
   idSchema,
   type SignUpRequest,
@@ -8,9 +6,7 @@ import {
   type VerifyEmailQuery,
   verifyEmailQuerySchema,
 } from '@unicore/shared';
-import request from 'supertest';
-import { AppModule } from '../src/app.module.js';
-import { configureApp } from '../src/app.setup.js';
+import { createTestApp, type TestApp } from './app.js';
 
 /** A route of the shape the real controllers get in stages 3–5, to check the global pipe. */
 @Controller('test-probe')
@@ -30,23 +26,17 @@ const id = '6f1c2b3a-1d2e-4f5a-8b9c-0d1e2f3a4b5c';
 const valid = { email: 'student@example.com', password: 'password', name: 'Аня' };
 
 describe('input validation', () => {
-  let app: NestExpressApplication;
+  let t: TestApp;
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
-      controllers: [ProbeController],
-    }).compile();
-    app = moduleRef.createNestApplication<NestExpressApplication>();
-    configureApp(app);
-    await app.init();
+    t = await createTestApp({ controllers: [ProbeController] });
   });
 
   afterAll(async () => {
-    await app.close();
+    await t.close();
   });
 
-  const post = (path: string) => request(app.getHttpServer()).post(path);
+  const post = (path: string) => t.http().post(path);
 
   it('passes the parsed body to the handler', async () => {
     const response = await post(`/v1/test-probe/${id}?token=abc`)
