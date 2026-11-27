@@ -1,4 +1,11 @@
-import { categories } from '@unicore/shared';
+import {
+  accountKinds,
+  activityKinds,
+  categories,
+  courses,
+  partnerBadges,
+  themeIds,
+} from '@unicore/shared';
 import { sql } from 'drizzle-orm';
 import {
   type AnyPgColumn,
@@ -22,15 +29,10 @@ import {
 // uniqueness, foreign keys); rules that need other rows or the current user live in the services.
 // After editing this file run `npm -w apps/api run db:generate` and commit the new migration.
 
+// Lists of values come from @unicore/shared, the same ones the API schemas check. A change
+// in a list, or in its order, changes a CHECK: db:generate then makes a new migration.
 /** Categories of events and interests; 'Все' is only a filter in the app. */
 const categoryValues = categories.filter((category) => category !== 'Все');
-const themeValues = ['violet', 'forest', 'light'];
-const accountKindValues = ['student', 'partner'];
-const activityKindValues = ['event', 'invite'];
-const courseValues = ['', '1', '2', '3', '4', '5', '6'];
-// The order of the create screen: task 2.5 replaces this list with `partnerBadges` from
-// @unicore/shared, and the same order keeps the generated SQL, so no new migration appears.
-const partnerBadgeValues = ['Встреча с командой', 'Стажировка', 'Экскурсия', 'Мастер-класс'];
 const emailTokenPurposeValues = ['verify_email'];
 
 /**
@@ -142,17 +144,17 @@ export const profiles = pgTable(
     createdAt: createdAt(),
   },
   (t) => [
-    check('profiles_account_kind_check', oneOf(t.accountKind, accountKindValues)),
+    check('profiles_account_kind_check', oneOf(t.accountKind, accountKinds)),
     check('profiles_name_check', sql`char_length(trim(${t.name})) between 1 and 40`),
     check('profiles_faculty_check', sql`char_length(${t.faculty}) <= 80`),
-    check('profiles_course_check', oneOf(t.course, courseValues)),
+    check('profiles_course_check', oneOf(t.course, courses)),
     check('profiles_group_name_check', sql`char_length(${t.groupName}) <= 20`),
     check('profiles_bio_check', sql`char_length(${t.bio}) <= 300`),
     check(
       'profiles_interests_check',
       sql`${t.interests} <@ array[${literals(categoryValues)}]::text[]`,
     ),
-    check('profiles_theme_check', oneOf(t.theme, themeValues)),
+    check('profiles_theme_check', oneOf(t.theme, themeIds)),
     check('profiles_company_check', sql`char_length(${t.company}) <= 80`),
     check('profiles_company_about_check', sql`char_length(${t.companyAbout}) <= 400`),
     // A partner has a company and no institute, course or group.
@@ -224,7 +226,7 @@ export const activities = pgTable(
     createdAt: createdAt(),
   },
   (t) => [
-    check('activities_kind_check', oneOf(t.kind, activityKindValues)),
+    check('activities_kind_check', oneOf(t.kind, activityKinds)),
     check('activities_title_check', sql`char_length(trim(${t.title})) between 5 and 80`),
     check(
       'activities_description_check',
@@ -239,7 +241,7 @@ export const activities = pgTable(
       // `is not null` is required: a CHECK that evaluates to NULL passes.
       sql`(${t.latitude} is null and ${t.longitude} is null) or (${t.latitude} is not null and ${t.longitude} is not null and ${t.latitude} between -90 and 90 and ${t.longitude} between -180 and 180)`,
     ),
-    check('activities_partner_badge_check', oneOf(t.partnerBadge, partnerBadgeValues)),
+    check('activities_partner_badge_check', oneOf(t.partnerBadge, partnerBadges)),
     // The feed: newest first.
     index('activities_feed_idx').on(t.createdAt.desc(), t.id),
     index('activities_host_idx').on(t.hostId),

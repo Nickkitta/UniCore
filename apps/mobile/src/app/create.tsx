@@ -10,6 +10,8 @@ import {
   eventTags,
   GeoPoint,
   parseLocalDate,
+  PartnerBadge,
+  partnerBadges,
   PhotoDraft,
   validateInvite,
 } from '@unicore/shared';
@@ -22,7 +24,7 @@ export default function CreateEvent() {
   const { state, run, busy } = useCampus();
   const [organizationId, setOrganizationId] = useState<string | null>(null);
   const partner = state.profile.accountKind === 'partner';
-  const [badge, setBadge] = useState('Встреча с командой');
+  const [badge, setBadge] = useState<PartnerBadge>(partnerBadges[0]);
   const { colors } = useTheme();
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<Category>('Общение');
@@ -112,7 +114,7 @@ export default function CreateEvent() {
         <View style={{ gap: 8 }}>
           <Txt variant="label">{state.profile.company} · метка публикации</Txt>
           <Row style={{ flexWrap: 'wrap' }}>
-            {['Встреча с командой', 'Стажировка', 'Экскурсия', 'Мастер-класс'].map((item) => (
+            {partnerBadges.map((item) => (
               <Chip
                 key={item}
                 title={item}

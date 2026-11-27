@@ -1,7 +1,14 @@
 export const categories = ['Все', 'Учёба', 'Карьера', 'Спорт', 'Общение', 'Творчество'] as const;
 export type Category = Exclude<(typeof categories)[number], 'Все'>;
 export type CategoryFilter = (typeof categories)[number];
-export type ThemeId = 'violet' | 'forest' | 'light';
+export const themeIds = ['violet', 'forest', 'light'] as const;
+export type ThemeId = (typeof themeIds)[number];
+export const accountKinds = ['student', 'partner'] as const;
+export type AccountKind = (typeof accountKinds)[number];
+/** Year of study; empty for partners and for students who haven't filled it in. */
+export const courses = ['', '1', '2', '3', '4', '5', '6'] as const;
+/** New activities are events; `invite` is kept for activities made before them. */
+export const activityKinds = ['event', 'invite'] as const;
 export type GeoPoint = { latitude: number; longitude: number };
 export type PhotoDraft = { uri: string; base64: string };
 export type Organization = { id: string; name: string; description: string };

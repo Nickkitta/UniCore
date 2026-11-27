@@ -1,4 +1,5 @@
 import { Controller, Get, HttpStatus, Res } from '@nestjs/common';
+import type { HealthResponse } from '@unicore/shared';
 import type { Response } from 'express';
 import { HealthService } from './health.service.js';
 
@@ -13,7 +14,7 @@ export class HealthController {
    * here rather than thrown, so the response keeps this shape and not the error format.
    */
   @Get()
-  async check(@Res({ passthrough: true }) response: Response) {
+  async check(@Res({ passthrough: true }) response: Response): Promise<HealthResponse> {
     const ok = await this.health.isDatabaseUp();
     if (!ok) response.status(HttpStatus.SERVICE_UNAVAILABLE);
     return { ok };

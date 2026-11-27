@@ -14,6 +14,14 @@ export const eventTags = [
   'Мастерская',
   'Для новичков',
 ];
+/** Labels of partner events, in the order of the create screen; the first is the default. */
+export const partnerBadges = [
+  'Встреча с командой',
+  'Стажировка',
+  'Экскурсия',
+  'Мастер-класс',
+] as const;
+export type PartnerBadge = (typeof partnerBadges)[number];
 export const instituteNames: Record<string, string> = {
   ИМИТ: 'Институт математики и информационных технологий',
   ИЕН: 'Институт естественных наук',

@@ -57,24 +57,29 @@ flowchart LR
 
 Правила проверяют `erasableSyntaxOnly` и `verbatimModuleSyntax` в его `tsconfig.json`. Node не снимает типы с файлов внутри `node_modules`; workspace-симлинк ведёт в `packages/shared`, поэтому в образе сервера пакет должен остаться workspace, а не копией в `node_modules`. Бандлер (rspack) отвергнут в задаче 2.2: лишний сборщик ради одного пакета.
 
-Контракт ложится рядом с уже перенесёнными файлами:
+Контракт лежит рядом с моделями и справочниками:
 
 ```text
 packages/shared/src/
-  models.ts catalog.ts invite.ts errors.ts   уже есть
+  models.ts      типы приложения и списки значений: themeIds, accountKinds, courses, activityKinds
+  catalog.ts     теги, партнёрские бейджи (partnerBadges), институты и группы
+  invite.ts      проверка формы создания события на клиенте
+  errors.ts      русские тексты всех кодов ошибок
   api/
-    prefix.ts      apiPrefix = 'v1', уже есть
-    auth.ts        sign-in, sign-up, refresh, ответ с токенами
+    prefix.ts      apiPrefix = 'v1'
+    common.ts      id (UUID), почта (trim и нижний регистр), категория, строка с длиной после trim
+    errors.ts      HTTP-статус каждого кода, тело ошибки
+    health.ts      GET /v1/health
+    auth.ts        sign-in, sign-up, refresh, sign-out, повторное письмо, ссылка из письма, токены
     profile.ts     PATCH /v1/profile
+    snapshot.ts    снимок: событие, профиль, сообщество — z.infer совпадает с models.ts
     activities.ts  создание события, запись, закладки
-    rooms.ts       комната, сообщение, помощник
-    photos.ts      ответ загрузки
+    rooms.ts       комната (EventRoom), сообщение, помощник
+    photos.ts      ответ загрузки, параметры подписанной ссылки
     admin.ts       промокод партнёра
-    snapshot.ts    Snapshot, Activity, Profile, EventRoom — z.infer совпадает с models.ts
-    errors.ts      тело ошибки и HTTP-статус каждого кода
 ```
 
-Сервер проверяет этими схемами вход (`@Body({ schema })`), приложение — разбирает ими ответы в `httpRepository`. Изменение контракта — один коммит, который правит обе стороны.
+Сервер проверяет этими схемами вход (`@Body({ schema })`), приложение — разбирает ими ответы в `httpRepository`. Изменение контракта — один коммит, который правит обе стороны. Типы, выведенные из схем ответа, совпадают с `Snapshot`, `Activity` и `EventRoom` из `models.ts` — это проверяют тесты типов пакета. Отличие одно: в событии из API нет `photoPaths`, поля Supabase.
 
 ## 3. Модули сервера
 
@@ -184,7 +189,9 @@ flowchart TD
 | файл больше лимита multer      | `UNICORE_FILE_TOO_LARGE` | 413                             |
 | любая другая ошибка            | `UNICORE_INTERNAL`       | 500, стек только в логе         |
 
-Полный список кодов — в разделе «Контракт API» [плана](backend-migration.md#контракт-api).
+Полный список кодов — в разделе «Контракт API» [плана](backend-migration.md#контракт-api), в коде — `errorStatus` в `packages/shared/src/api/errors.ts`.
+
+**Что проверяет схема, а что сервис.** Схема входа проверяет форму данных и ограничения одного поля: длины после trim, диапазоны, списки значений, UUID, формат даты. Её ошибка — всегда 422 `UNICORE_INVALID_INPUT`, в `message` перечислены поля с путями (`partner.company: …`, `id: …`). Контроллер получает уже разобранное значение: строки обрезаны, почта в нижнем регистре, значения по умолчанию подставлены, лишние поля отброшены. Сервис проверяет то, у чего есть свой код (`UNICORE_WEAK_PASSWORD`, `UNICORE_INVALID_TAGS`, `UNICORE_INVALID_PHOTOS`, `UNICORE_PAST`, `UNICORE_INVALID_GROUP`, `UNICORE_INVALID_CODE`), и всё, что зависит от базы или текущего пользователя. Поэтому в схемах `tags` и `photoIds` — просто массивы, а пароль при регистрации — просто строка. Конвейер — `InputValidationPipe` в `src/common/`, наследник `StandardSchemaValidationPipe`, подключается в `app.setup.ts`.
 
 ## 5. Авторизация
 
@@ -454,7 +461,7 @@ erDiagram
 
 Сервер сам применяет недостающие миграции при старте, до того как начнёт принимать запросы, — при разработке, в тестах и в проде одинаково. Если миграция не прошла, сервер не стартует. Причина — PGlite: его папку данных может открыть только один процесс, и отдельный `db:migrate` при работающем `start:dev` её испортил бы. `db:migrate` (drizzle-kit, та же таблица `drizzle.__drizzle_migrations`) остаётся для ручного запуска при остановленном сервере.
 
-Списки значений в CHECK собираются в `schema.ts`: категории — из `categories` в `packages/shared`, остальные (темы, виды аккаунта и события, курс, бейджи партнёров) — литералы, пока их нет в `packages/shared` как значений. Если справочник поменяется, `db:generate` создаст миграцию с новым CHECK.
+Списки значений в CHECK берутся из `packages/shared` — тех же, что проверяют схемы API: категории, темы, виды аккаунта и события, курс, бейджи партнёров. Литералом в `schema.ts` остаётся только назначение одноразового токена (`verify_email`). Если список или порядок значений поменяется, `db:generate` создаст миграцию с новым CHECK.
 
 ## 7. Ключевые сценарии
 
@@ -589,7 +596,7 @@ apps/api/
     app.setup.ts        configureApp: префикс v1, CORS, trust proxy, shutdown hooks, позже — глобальные pipe и фильтр; общий для main.ts и тестов
     app.module.ts
     config/env.ts       zod-схема окружения и тип Env
-    common/             DomainError, фильтр исключений, @Public, @CurrentUser, @AdminOnly
+    common/             InputValidationPipe, DomainError, фильтр исключений, @Public, @CurrentUser, @AdminOnly
     db/                 schema.ts; database.ts — открытие Postgres или PGlite, миграции при старте, тип Db;
                         database.module.ts — DatabaseModule поверх DrizzleModule из @nestjs/drizzle
     auth/               контроллер, сервис, токены, пароли, подтверждение почты, guards
