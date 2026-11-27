@@ -58,7 +58,7 @@ Docs: https://docs.expo.dev/eas/index.md
 
 ## Backend migration (in progress)
 
-The project is moving from Supabase to its own TypeScript server in a monorepo (`apps/mobile`, `apps/api`, `packages/shared`). Stages, tasks, progress and the verification step for each task live in `docs/backend-migration.md`. Read it before touching backend or data-layer code. Tick a task only after its verification passes, then update the stage counter in the progress table and add a journal entry.
+The project is moving from Supabase to its own TypeScript server in a monorepo (`apps/mobile`, `apps/api`, `packages/shared`). Stages, tasks, progress and the verification step for each task live in `docs/backend-migration.md`; the target server architecture (NestJS modules, database schema, auth flows, diagrams) lives in `docs/backend-architecture.md`. Read both before touching backend or data-layer code, and update the architecture doc when a design decision changes. Tick a task only after its verification passes, then update the stage counter in the progress table and add a journal entry.
 
 ## Rules
 
