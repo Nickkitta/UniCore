@@ -236,6 +236,13 @@ sequenceDiagram
 
 Клиент обновляет токен один раз на все запросы, получившие 401 одновременно (задача 7.2 плана).
 
+Адреса — `AuthController` (`src/auth/auth.controller.ts`): `sign-up` отвечает 201, `sign-in` и `refresh` — 200 с парой токенов, `sign-out` — 204 без тела. Регистрацию и вход ведёт `AuthService`, обновление и выход — `TokensService`.
+
+- Вход проверяет по порядку: пароль, портал, подтверждение почты (3.4). Пароль идёт первым, иначе по одной почте можно было бы узнать тип аккаунта.
+- Неверный пароль и неизвестная почта дают одно и то же 401 `UNICORE_INVALID_CREDENTIALS`. Для неизвестной почты пароль проверяется против хеша случайной строки с теми же параметрами argon2id (`verifyPasswordOrDummy` в `src/auth/password.ts`); `UsersService` вычисляет его при старте, поэтому и первый вход отвечает не быстрее обычного.
+- Аккаунт другого типа, чем портал, — 403 `UNICORE_WRONG_PORTAL`; сессия не создаётся.
+- Каждый вход открывает новую семью refresh-токенов: на двух устройствах — две независимые сессии.
+
 ### Жизнь токена обновления
 
 ```mermaid
@@ -616,9 +623,10 @@ apps/api/
                         позже — @Public, @CurrentUser, @AdminOnly
     db/                 schema.ts; database.ts — открытие Postgres или PGlite, миграции при старте, тип Db;
                         database.module.ts — DatabaseModule поверх DrizzleModule из @nestjs/drizzle
-    auth/               password.ts — argon2id и минимальная длина; users.service.ts — аккаунт с профилем одной транзакцией;
-                        access-token.ts — подпись и проверка JWT доступа; tokens.service.ts — сессии и ротация refresh-токенов;
-                        позже — контроллер, подтверждение почты, guards
+    auth/               password.ts — argon2id, минимальная длина, проверка с заглушкой; users.service.ts — аккаунт с профилем
+                        одной транзакцией и проверка пароля и портала; access-token.ts — подпись и проверка JWT доступа;
+                        tokens.service.ts — сессии и ротация refresh-токенов; auth.service.ts — регистрация и вход;
+                        auth.controller.ts — /v1/auth/*; позже — подтверждение почты, guards
     profile/
     activities/
     rooms/

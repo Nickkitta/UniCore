@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
+import { AuthController } from './auth.controller.js';
+import { AuthService } from './auth.service.js';
 import { TokensService } from './tokens.service.js';
 import { UsersService } from './users.service.js';
 
-/** Accounts, passwords, tokens and, from the next tasks, the /v1/auth/* routes. */
+/** Accounts, passwords, sessions and the /v1/auth/* routes. */
 @Module({
-  providers: [UsersService, TokensService],
+  controllers: [AuthController],
+  providers: [UsersService, TokensService, AuthService],
   exports: [UsersService, TokensService],
 })
 export class AuthModule {}

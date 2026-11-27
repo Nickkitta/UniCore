@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import { hash, verify } from '@node-rs/argon2';
 import { minPasswordLength } from '@unicore/shared';
 import { DomainError } from '../common/domain-error.js';
@@ -18,6 +19,31 @@ export function hashPassword(password: string): Promise<string> {
 /** The parameters come from the hash itself, so older hashes still verify. */
 export function verifyPassword(passwordHash: string, password: string): Promise<boolean> {
   return verify(passwordHash, password);
+}
+
+let dummyHash: Promise<string> | undefined;
+
+/**
+ * The hash of a random string with the same parameters as real ones, computed once per process.
+ * UsersService computes it at startup, so even the first sign-in waits no longer than usual.
+ */
+export function dummyPasswordHash(): Promise<string> {
+  dummyHash ??= hashPassword(randomBytes(32).toString('base64url'));
+  return dummyHash;
+}
+
+/**
+ * Like verifyPassword, but with no account (`undefined`) it checks the password against
+ * the dummy hash and answers false: the time of the answer doesn't tell whether the email
+ * is registered.
+ */
+export async function verifyPasswordOrDummy(
+  passwordHash: string | undefined,
+  password: string,
+): Promise<boolean> {
+  if (passwordHash !== undefined) return verifyPassword(passwordHash, password);
+  await verifyPassword(await dummyPasswordHash(), password);
+  return false;
 }
 
 /** Throws UNICORE_WEAK_PASSWORD for a password shorter than the app allows. */

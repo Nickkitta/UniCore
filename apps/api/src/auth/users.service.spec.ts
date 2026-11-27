@@ -1,13 +1,21 @@
 import { PGlite } from '@electric-sql/pglite';
+import { verify } from '@node-rs/argon2';
 import { errorStatus } from '@unicore/shared';
 import { eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/pglite';
 import { migrate } from 'drizzle-orm/pglite/migrator';
+import { createUser, testPassword } from '../../test/users.js';
 import { DomainError } from '../common/domain-error.js';
 import { type Db, migrationsFolder } from '../db/database.js';
 import { profiles, users } from '../db/schema.js';
-import { verifyPassword } from './password.js';
+import { dummyPasswordHash, verifyPassword } from './password.js';
 import { UsersService } from './users.service.js';
+
+// The real argon2 with a call counter: an unknown email must still cost a password check.
+vi.mock('@node-rs/argon2', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@node-rs/argon2')>();
+  return { ...actual, verify: vi.fn(actual.verify) };
+});
 
 let client: PGlite;
 let db: Db;
@@ -100,5 +108,74 @@ describe('UsersService.create', () => {
       service.create({ email: 'long@example.test', password, name: 'я'.repeat(41) }),
     ).rejects.toThrow();
     expect(await usersWithEmail('long@example.test')).toEqual([]);
+  });
+});
+
+describe('UsersService.authenticate', () => {
+  it('returns the id for the right password, whatever the case and spaces of the email', async () => {
+    const user = await createUser(db, { email: 'anya.signin@example.test' });
+    expect(
+      await service.authenticate({
+        email: ' Anya.SignIn@Example.TEST ',
+        password: testPassword,
+        portal: 'student',
+      }),
+    ).toBe(user.id);
+  });
+
+  it('answers a wrong password and an unknown email alike: UNICORE_INVALID_CREDENTIALS, 401', async () => {
+    const user = await createUser(db);
+    const wrongPassword = await errorCode(
+      service.authenticate({ email: user.email, password: 'wrong-password', portal: 'student' }),
+    );
+    const unknownEmail = await errorCode(
+      service.authenticate({
+        email: 'nobody@example.test',
+        password: testPassword,
+        portal: 'student',
+      }),
+    );
+    expect([wrongPassword, unknownEmail]).toEqual([
+      'UNICORE_INVALID_CREDENTIALS',
+      'UNICORE_INVALID_CREDENTIALS',
+    ]);
+    expect(errorStatus.UNICORE_INVALID_CREDENTIALS).toBe(401);
+  });
+
+  it('checks the password of an unknown email against the dummy hash', async () => {
+    const dummy = await dummyPasswordHash();
+    vi.mocked(verify).mockClear();
+    await errorCode(
+      service.authenticate({ email: 'ghost@example.test', password: 'guess', portal: 'student' }),
+    );
+    expect(verify).toHaveBeenCalledExactlyOnceWith(dummy, 'guess');
+  });
+
+  it('rejects an account of the other kind than the portal: UNICORE_WRONG_PORTAL, 403', async () => {
+    const student = await createUser(db);
+    const partner = await createUser(db, { kind: 'partner' });
+    const asPartner = await errorCode(
+      service.authenticate({ email: student.email, password: testPassword, portal: 'partner' }),
+    );
+    const asStudent = await errorCode(
+      service.authenticate({ email: partner.email, password: testPassword, portal: 'student' }),
+    );
+    expect([asPartner, asStudent]).toEqual(['UNICORE_WRONG_PORTAL', 'UNICORE_WRONG_PORTAL']);
+    expect(errorStatus.UNICORE_WRONG_PORTAL).toBe(403);
+    expect(
+      await service.authenticate({
+        email: partner.email,
+        password: testPassword,
+        portal: 'partner',
+      }),
+    ).toBe(partner.id);
+  });
+
+  it('checks the password before the portal, so the kind of an account stays hidden', async () => {
+    const student = await createUser(db);
+    const code = await errorCode(
+      service.authenticate({ email: student.email, password: 'wrong-password', portal: 'partner' }),
+    );
+    expect(code).toBe('UNICORE_INVALID_CREDENTIALS');
   });
 });
