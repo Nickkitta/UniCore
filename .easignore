@@ -40,13 +40,21 @@ test-results/
 playwright-report/
 *.log
 preview/
-/public/connect.html
-/public/expo-qr.png
+/apps/mobile/public/connect.html
+/apps/mobile/public/expo-qr.png
 .idea/
 
 # generated native folders
-/ios
-/android
+/apps/mobile/ios
+/apps/mobile/android
+
+# Monorepo: EAS reads this file only from the repository root and uploads the
+# whole repository, so keep the server, docs and deploy files out of the archive.
+# apps/mobile, packages/* and the root package.json and package-lock.json are required.
+/apps/api/
+/docs/
+/deploy/
+/vitest.config.mts
 
 # Build only the app, never seed credentials or presentation source material
 .env*
