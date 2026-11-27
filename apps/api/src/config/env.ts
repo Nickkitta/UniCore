@@ -32,6 +32,8 @@ export const envSchema = z.object({
   ),
   // Relative to the working directory (apps/api for npm -w scripts); `memory://` keeps the data in memory.
   PGLITE_DIR: z.string().min(1).default('.local/pgdata'),
+  // pino level; the e2e tests run with `silent`.
+  LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
 });
 
 export type Env = z.infer<typeof envSchema>;

@@ -20,7 +20,13 @@ describe('envSchema', () => {
       CORS_ORIGINS: ['http://localhost:8081'],
       TRUST_PROXY: false,
       PGLITE_DIR: '.local/pgdata',
+      LOG_LEVEL: 'info',
     });
+  });
+
+  it('accepts only pino log levels', () => {
+    expect(envSchema.parse({ JWT_SECRET: secret, LOG_LEVEL: 'silent' }).LOG_LEVEL).toBe('silent');
+    expect(envSchema.safeParse({ JWT_SECRET: secret, LOG_LEVEL: 'verbose' }).success).toBe(false);
   });
 
   it('accepts only a Postgres DATABASE_URL', () => {

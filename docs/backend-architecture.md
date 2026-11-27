@@ -177,17 +177,21 @@ flowchart TD
   svc -- "DomainError" --> filter
 ```
 
-Все ошибки выходят через один глобальный фильтр в формате `{ "error": { "code": "UNICORE_FULL", "message": "…" } }`:
+Все ошибки выходят через один глобальный фильтр `ApiExceptionFilter` (`src/common/api-exception.filter.ts`, подключается в `app.setup.ts`) в формате `{ "error": { "code": "UNICORE_FULL", "message": "…" } }`. Фильтр ловит и то, что брошено вне контроллеров: неизвестный адрес под `/v1` и ошибки разбора тела. Исключения Nest и его пакетов он переводит в код по HTTP-статусу, поэтому `ThrottlerException` и `PayloadTooLargeException` не нужно перечислять по классам:
 
-| Откуда                         | Код                      | HTTP                            |
-| ------------------------------ | ------------------------ | ------------------------------- |
-| `DomainError` из сервиса       | код ошибки               | по таблице из `packages/shared` |
-| схема входа не прошла          | `UNICORE_INVALID_INPUT`  | 422                             |
-| нет или неверный токен доступа | `UNICORE_AUTH_REQUIRED`  | 401                             |
-| лимит частоты                  | `UNICORE_RATE_LIMIT`     | 429                             |
-| неизвестный адрес              | `UNICORE_NOT_FOUND`      | 404                             |
-| файл больше лимита multer      | `UNICORE_FILE_TOO_LARGE` | 413                             |
-| любая другая ошибка            | `UNICORE_INTERNAL`       | 500, стек только в логе         |
+| Откуда                                                           | Код                      | HTTP                            |
+| ---------------------------------------------------------------- | ------------------------ | ------------------------------- |
+| `DomainError` из сервиса или `InputValidationPipe`               | код ошибки               | по таблице из `packages/shared` |
+| схема входа не прошла                                            | `UNICORE_INVALID_INPUT`  | 422                             |
+| битый JSON, неверный `%` в адресе (400 от Express) и другие 4xx  | `UNICORE_INVALID_INPUT`  | 422                             |
+| нет или неверный токен доступа                                   | `UNICORE_AUTH_REQUIRED`  | 401                             |
+| guard вернул `false` (`ForbiddenException`)                      | `UNICORE_FORBIDDEN`      | 403                             |
+| лимит частоты                                                    | `UNICORE_RATE_LIMIT`     | 429                             |
+| неизвестный адрес под `/v1`                                      | `UNICORE_NOT_FOUND`      | 404                             |
+| файл больше лимита multer или JSON больше 100 КБ                 | `UNICORE_FILE_TOO_LARGE` | 413                             |
+| любая другая ошибка, в том числе исключение Nest со статусом 5xx | `UNICORE_INTERNAL`       | 500, стек только в логе         |
+
+`message` у кодов, кроме `UNICORE_INTERNAL`, — текст исключения (у `DomainError` по умолчанию — русский текст кода из `errorMessages`); у 500 — всегда `Internal server error`. Адреса вне `/v1` в контракт не входят: Nest ставит свой обработчик «не найдено» только под глобальным префиксом, и на них отвечает Express своей страницей 404.
 
 Полный список кодов — в разделе «Контракт API» [плана](backend-migration.md#контракт-api), в коде — `errorStatus` в `packages/shared/src/api/errors.ts`.
 
@@ -568,7 +572,8 @@ sequenceDiagram
 
 ## 9. Логи и безопасность
 
-- **Логи** — JSON от pino с id запроса. Маскируются заголовок `authorization`, поля `password`, `refreshToken`, `token` и параметр `sig` в адресе.
+- **Логи** — JSON-строки от pino (`nestjs-pino`, параметры — `src/common/logger.params.ts`), в том числе служебные сообщения Nest. На каждый запрос под `/v1` — одна строка с UUID запроса; тот же UUID уходит клиенту в заголовке `X-Request-Id`. Уровень строки — по ответу: 2xx/3xx — `info`, 4xx — `warn`, 5xx — `error`; у ошибки в строке есть `errorCode`, а у 500 ещё и `err` со стеком (фильтр кладёт исключение в `res.err`, отдельной строки нет). Тела запросов не пишутся. Маскируются заголовки `authorization` и `cookie`, параметры `sig` и `token` в адресе и в `req.query` (`token` — одноразовая ссылка подтверждения почты), поля `password`, `refreshToken`, `token` на верхнем и втором уровне записанного объекта. Уровень — `LOG_LEVEL`; e2e-тесты идут с `silent`. В `start:dev` вывод читаемый через `pino-pretty`, `start` и прод пишут JSON.
+  - Запрос, который отклонил разборщик тела (битый JSON, тело больше 100 КБ), получает ответ в формате контракта, но строки в логе и `X-Request-Id` у него нет: Nest ставит разборщик тела раньше middleware модулей, в том числе pino-http.
 - **Лимиты** — `@nestjs/throttler` на `/v1/auth/*`: по IP и отдельно по почте из тела запроса. За прокси нужен `TRUST_PROXY` с адресом прокси, иначе все клиенты выглядят одним IP; `X-Forwarded-For` принимается только от этого адреса. Порт `api` наружу не открыт, поэтому `X-Forwarded-For` приходит только от Caddy и его нельзя подделать.
 - **CORS** — только адреса из `CORS_ORIGINS`. Приложению на телефоне CORS не нужен, браузеру — нужен.
 - **Размеры** — JSON до 100 КБ (по умолчанию в Express), фото до 5 МБ через `limits.fileSize` у multer.
@@ -593,10 +598,11 @@ PGlite — один процесс и одно соединение, поэто�
 apps/api/
   src/
     main.ts             создаёт приложение, вызывает configureApp и слушает PORT
-    app.setup.ts        configureApp: префикс v1, CORS, trust proxy, shutdown hooks, позже — глобальные pipe и фильтр; общий для main.ts и тестов
+    app.setup.ts        configureApp: логгер pino, префикс v1, CORS, trust proxy, глобальные pipe и фильтр, shutdown hooks; общий для main.ts и тестов
     app.module.ts
     config/env.ts       zod-схема окружения и тип Env
-    common/             InputValidationPipe, DomainError, фильтр исключений, @Public, @CurrentUser, @AdminOnly
+    common/             InputValidationPipe, DomainError, ApiExceptionFilter, logger.params.ts (pino-http и маскировка),
+                        позже — @Public, @CurrentUser, @AdminOnly
     db/                 schema.ts; database.ts — открытие Postgres или PGlite, миграции при старте, тип Db;
                         database.module.ts — DatabaseModule поверх DrizzleModule из @nestjs/drizzle
     auth/               контроллер, сервис, токены, пароли, подтверждение почты, guards

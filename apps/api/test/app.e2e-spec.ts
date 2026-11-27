@@ -22,6 +22,8 @@ describe('app', () => {
     await request(app.getHttpServer()).get('/v1/health').expect(200, { ok: true });
   });
 
+  // Express answers it with its own 404: Nest mounts its not-found handler, and with it the
+  // contract format, under the global prefix only (errors.e2e-spec.ts checks /v1/nope).
   it('has no routes outside /v1', async () => {
     await request(app.getHttpServer()).get('/health').expect(404);
   });

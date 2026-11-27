@@ -2,9 +2,8 @@ import {
   type ArgumentMetadata,
   StandardSchemaValidationPipe,
   type StandardSchemaValidationPipeOptions,
-  UnprocessableEntityException,
 } from '@nestjs/common';
-import { errorBody } from '@unicore/shared';
+import { DomainError } from './domain-error.js';
 
 type Issues = Parameters<NonNullable<StandardSchemaValidationPipeOptions['exceptionFactory']>>[0];
 
@@ -34,9 +33,7 @@ export class InputValidationPipe extends StandardSchemaValidationPipe {
       return await super.transform(value, metadata);
     } catch (error) {
       if (!(error instanceof InvalidInput)) throw error;
-      throw new UnprocessableEntityException(
-        errorBody('UNICORE_INVALID_INPUT', describeIssues(error.issues, metadata.data)),
-      );
+      throw new DomainError('UNICORE_INVALID_INPUT', describeIssues(error.issues, metadata.data));
     }
   }
 }

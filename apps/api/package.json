@@ -6,7 +6,7 @@
   "scripts": {
     "build": "nest build -b swc",
     "start": "node dist/main.js",
-    "start:dev": "nest start -b swc -w --type-check",
+    "start:dev": "nest start -b swc -w --type-check | pino-pretty",
     "start:debug": "nest start -b swc --debug --watch",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint --type-aware src/ test/",
@@ -27,7 +27,10 @@
     "@nestjs/platform-express": "^12.0.1",
     "@unicore/shared": "*",
     "drizzle-orm": "1.0.0-rc.6",
+    "nestjs-pino": "^5.3.2",
     "pg": "^8.23.1",
+    "pino": "^10.4.0",
+    "pino-http": "^11.0.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "zod": "^4.6.7"
@@ -45,6 +48,7 @@
     "drizzle-kit": "1.0.0-rc.6",
     "oxlint": "^1.58.0",
     "oxlint-tsgolint": "^7.0.2001",
+    "pino-pretty": "^13.2.0",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
     "typescript": "~6.0.3",

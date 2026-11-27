@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { envSchema } from './config/env.js';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { LoggerModule } from 'nestjs-pino';
+import { loggerParams } from './common/logger.params.js';
+import { type Env, envSchema } from './config/env.js';
 import { DatabaseModule } from './db/database.module.js';
 import { HealthModule } from './health/health.module.js';
 
@@ -11,6 +13,11 @@ import { HealthModule } from './health/health.module.js';
       validationSchema: envSchema,
       // Tests get their variables from the Vitest config, never from a developer's .env.
       ignoreEnvFile: process.env.NODE_ENV === 'test',
+    }),
+    LoggerModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService<Env, true>) =>
+        loggerParams(config.get('LOG_LEVEL', { infer: true })),
     }),
     DatabaseModule,
     HealthModule,
