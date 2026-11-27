@@ -13,8 +13,8 @@ Expo ships breaking changes every SDK release. APIs you remember are likely rena
 This is an npm workspaces monorepo:
 
 - `apps/mobile` — the Expo app (`@unicore/mobile`). All Expo and EAS paths below are relative to it.
-- `packages/shared` — `@unicore/shared`: domain models, catalog, invite validation and error codes. Shipped as TypeScript sources without a build step; the future server will use it too, so it must not depend on Expo or React Native.
-- `apps/api` — the future TypeScript server (see "Backend migration" below).
+- `packages/shared` — `@unicore/shared`: domain models, catalog, invite validation and error codes. Shipped as TypeScript sources without a build step; the server will use it too, so it must not depend on Expo, React Native or Nest.
+- `apps/api` — the NestJS 12 server (`@unicore/api`), being built stage by stage (see "Backend migration" below).
 - Root `supabase/`, `scripts/seed*.mjs` and `tests/` — the current Supabase backend and its tests; they stay until stage 9 of the migration.
 
 ## Commands
@@ -55,6 +55,22 @@ Run `npm run check` from the repository root before declaring any task done.
 Use EAS to build, sign, and submit the app in the cloud (`eas build`, `eas submit`) and to ship over-the-air updates (`eas update`) — no local Xcode or Android Studio required. Run EAS CLI as `bunx eas-cli <command>` in Bun projects, or `npx eas-cli@latest <command>` otherwise; substitute that for bare `eas` in docs examples.
 Run EAS CLI from `apps/mobile`, where `eas.json` lives. EAS uploads the whole repository and reads `.easignore` only from the repository root; it replaces every `.gitignore`, so add new ignore rules to both files.
 Docs: https://docs.expo.dev/eas/index.md
+
+## Server (`apps/api`, NestJS 12)
+
+NestJS 12 is likely newer than your training data: it moved to ESM, validates with Standard Schema (zod) instead of class-validator, and changed its builders. Read the docs before writing server code — https://docs.nestjs.com/llms.txt indexes them with a markdown page per chapter. Check Nest's first-party packages (config, throttler, schedule, drizzle, mail, storage, terminus…) before adding another library.
+
+- The project is ESM: relative imports end in `.js`, there is no `__dirname` (use `import.meta.dirname`), mocks are `vi.fn()`.
+- Validate input with `@Body({ schema })`, `@Query({ schema })` and `@Param('id', { schema })` using schemas from `packages/shared`.
+- `src/app.setup.ts` holds the HTTP setup shared by `main.ts` and the tests; add global pipes, filters and middleware there, not in `main.ts`.
+- Environment variables are validated by the zod schema in `src/config/env.ts`; add new ones there and to `apps/api/.env.example`.
+
+```bash
+npm -w apps/api run start:dev   # watch mode with SWC; needs apps/api/.env (copy .env.example)
+npm -w apps/api run build       # SWC build to apps/api/dist
+npm -w apps/api run start       # run the build
+npm -w apps/api run check       # typecheck, oxlint, unit and e2e tests
+```
 
 ## Backend migration (in progress)
 

@@ -524,29 +524,29 @@ sequenceDiagram
 
 Переменные проверяются zod-схемой при старте; без обязательной сервер не запускается и называет её.
 
-| Переменная                        | По умолчанию            | Назначение                                                           |
-| --------------------------------- | ----------------------- | -------------------------------------------------------------------- |
-| `PORT`                            | `3000`                  | порт HTTP                                                            |
-| `DATABASE_URL`                    | —                       | Postgres; без неё — PGlite в `PGLITE_DIR`                            |
-| `PGLITE_DIR`                      | `.local/pgdata`         | файлы PGlite для разработки                                          |
-| `JWT_SECRET`                      | обязательна             | подпись токенов доступа, не короче 32 символов                       |
-| `ACCESS_TTL`, `REFRESH_TTL`       | `15m`, `30d`            | сроки токенов; для проверки 7.7 — `ACCESS_TTL=60s`                   |
-| `FILES_SECRET`                    | обязательна             | подпись ссылок на фото, отдельно от `JWT_SECRET`                     |
-| `PUBLIC_BASE_URL`                 | `http://localhost:3000` | адрес в ссылках на фото и в письмах                                  |
-| `PHOTOS_DIR`                      | `.local/photos`         | каталог файлов                                                       |
-| `AUTH_REQUIRE_EMAIL_VERIFICATION` | `false`                 | вход только после подтверждения почты                                |
-| `MAIL_TRANSPORT`                  | `console`               | `console` или `smtp`                                                 |
-| `SMTP_URL`, `MAIL_FROM`           | —                       | обязательны при `MAIL_TRANSPORT=smtp`                                |
-| `CORS_ORIGINS`                    | `http://localhost:8081` | откуда разрешены запросы из браузера (Expo web, Playwright)          |
-| `TRUST_PROXY`                     | `false`                 | за Caddy — `true`, чтобы лимиты считались по IP клиента, а не прокси |
-| `LOG_LEVEL`                       | `info`                  | уровень pino                                                         |
+| Переменная                        | По умолчанию            | Назначение                                                                                                                           |
+| --------------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `PORT`                            | `3000`                  | порт HTTP                                                                                                                            |
+| `DATABASE_URL`                    | —                       | Postgres; без неё — PGlite в `PGLITE_DIR`                                                                                            |
+| `PGLITE_DIR`                      | `.local/pgdata`         | файлы PGlite для разработки                                                                                                          |
+| `JWT_SECRET`                      | обязательна             | подпись токенов доступа, не короче 32 символов                                                                                       |
+| `ACCESS_TTL`, `REFRESH_TTL`       | `15m`, `30d`            | сроки токенов; для проверки 7.7 — `ACCESS_TTL=60s`                                                                                   |
+| `FILES_SECRET`                    | обязательна             | подпись ссылок на фото, отдельно от `JWT_SECRET`                                                                                     |
+| `PUBLIC_BASE_URL`                 | `http://localhost:3000` | адрес в ссылках на фото и в письмах                                                                                                  |
+| `PHOTOS_DIR`                      | `.local/photos`         | каталог файлов                                                                                                                       |
+| `AUTH_REQUIRE_EMAIL_VERIFICATION` | `false`                 | вход только после подтверждения почты                                                                                                |
+| `MAIL_TRANSPORT`                  | `console`               | `console` или `smtp`                                                                                                                 |
+| `SMTP_URL`, `MAIL_FROM`           | —                       | обязательны при `MAIL_TRANSPORT=smtp`                                                                                                |
+| `CORS_ORIGINS`                    | `http://localhost:8081` | откуда разрешены запросы из браузера (Expo web, Playwright)                                                                          |
+| `TRUST_PROXY`                     | `false`                 | за Caddy — адрес прокси для Express `trust proxy` (`uniquelocal`, подсеть), чтобы лимиты считались по IP клиента; `true` отклоняется |
+| `LOG_LEVEL`                       | `info`                  | уровень pino                                                                                                                         |
 
 Шаблон — `apps/api/.env.example`; настоящие значения лежат только на сервере.
 
 ## 9. Логи и безопасность
 
 - **Логи** — JSON от pino с id запроса. Маскируются заголовок `authorization`, поля `password`, `refreshToken`, `token` и параметр `sig` в адресе.
-- **Лимиты** — `@nestjs/throttler` на `/v1/auth/*`: по IP и отдельно по почте из тела запроса. За прокси нужен `TRUST_PROXY`, иначе все клиенты выглядят одним IP. Порт `api` наружу не открыт, поэтому `X-Forwarded-For` приходит только от Caddy и его нельзя подделать.
+- **Лимиты** — `@nestjs/throttler` на `/v1/auth/*`: по IP и отдельно по почте из тела запроса. За прокси нужен `TRUST_PROXY` с адресом прокси, иначе все клиенты выглядят одним IP; `X-Forwarded-For` принимается только от этого адреса. Порт `api` наружу не открыт, поэтому `X-Forwarded-For` приходит только от Caddy и его нельзя подделать.
 - **CORS** — только адреса из `CORS_ORIGINS`. Приложению на телефоне CORS не нужен, браузеру — нужен.
 - **Размеры** — JSON до 100 КБ (по умолчанию в Express), фото до 5 МБ через `limits.fileSize` у multer.
 - **Секреты** — `JWT_SECRET` и `FILES_SECRET` разные, хранятся только в `.env` на сервере. В git — только шаблоны.
@@ -569,9 +569,10 @@ PGlite — один процесс и одно соединение, поэто�
 ```text
 apps/api/
   src/
-    main.ts             префикс v1, глобальные pipe и фильтр, CORS, trust proxy, shutdown hooks
+    main.ts             создаёт приложение, вызывает configureApp и слушает PORT
+    app.setup.ts        configureApp: префикс v1, CORS, trust proxy, shutdown hooks, позже — глобальные pipe и фильтр; общий для main.ts и тестов
     app.module.ts
-    config/             zod-схема окружения
+    config/env.ts       zod-схема окружения и тип Env
     common/             DomainError, фильтр исключений, @Public, @CurrentUser, @AdminOnly
     db/                 DatabaseModule, schema.ts, типы Db и Tx
     auth/               контроллер, сервис, токены, пароли, подтверждение почты, guards
