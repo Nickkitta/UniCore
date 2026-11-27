@@ -1,0 +1,33 @@
+# Postgres for development and for the concurrency test (task 4.10).
+# Optional: without DATABASE_URL the server runs on PGlite.
+#
+#   docker compose -f apps/api/docker-compose.dev.yml up -d --wait   # start and wait until ready
+#   docker compose -f apps/api/docker-compose.dev.yml stop           # stop, keep the data
+#   docker compose -f apps/api/docker-compose.dev.yml down -v        # remove with the data
+#
+# apps/api/.env: DATABASE_URL=postgres://unicore:unicore@localhost:5432/unicore
+name: unicore-dev
+
+services:
+  postgres:
+    # Major 18 as in PGlite 0.5, which the tests and the default dev database use.
+    image: postgres:18
+    environment:
+      POSTGRES_USER: unicore
+      POSTGRES_PASSWORD: unicore
+      POSTGRES_DB: unicore
+    ports:
+      # This machine only: the password is public.
+      - '127.0.0.1:5432:5432'
+    volumes:
+      # Since 18 the image keeps PGDATA in /var/lib/postgresql/18/docker,
+      # so the volume goes to /var/lib/postgresql, not /var/lib/postgresql/data.
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U unicore -d unicore']
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+volumes:
+  pgdata:

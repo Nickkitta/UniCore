@@ -76,6 +76,9 @@ npm -w apps/api run check       # typecheck, oxlint, unit and e2e tests
 npm -w apps/api run db:generate # SQL migration from changes in src/db/schema.ts
 npm -w apps/api run db:migrate  # apply migrations (PGlite: only with the server stopped)
 npm -w apps/api run db:check    # consistency of the migration history
+
+# optional Postgres 18 on 127.0.0.1:5432 (user, password and database: unicore)
+docker compose -f apps/api/docker-compose.dev.yml up -d --wait
 ```
 
 ## Backend migration (in progress)

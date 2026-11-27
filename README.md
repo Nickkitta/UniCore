@@ -110,6 +110,15 @@ npm.cmd -w apps/api run start:dev
 
 Сервер слушает порт 3000: [localhost:3000/v1/health](http://localhost:3000/v1/health). Без обязательной переменной он не стартует и называет её в ошибке
 
+По умолчанию база — PGlite в `apps/api/.local/pgdata`, Docker не нужен. Postgres 18 для разработки поднимается из `apps/api/docker-compose.dev.yml` на `127.0.0.1:5432`; таблицы сервер создаёт миграциями при старте
+
+```powershell
+# в корне репозитория; в apps\api\.env задай DATABASE_URL=postgres://unicore:unicore@localhost:5432/unicore
+docker compose -f apps/api/docker-compose.dev.yml up -d --wait
+docker compose -f apps/api/docker-compose.dev.yml stop      # остановить, данные останутся
+docker compose -f apps/api/docker-compose.dev.yml down -v   # удалить вместе с данными
+```
+
 ## Supabase
 
 Подключён адаптер `apps/mobile/src/services/supabaseRepository.ts`, структура базы и серверные функции находятся в `supabase/migrations/`
