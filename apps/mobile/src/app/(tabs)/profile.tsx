@@ -5,7 +5,7 @@ import { Avatar, Button, Chip, Row, Screen, Txt } from '../../components/ui';
 import { useCampus } from '../../state/CampusProvider';
 import { campusRepository, isMockMode } from '../../services';
 import { themes, useTheme } from '../../theme';
-import type { ThemeId } from '../../domain/models';
+import type { ThemeId } from '@unicore/shared';
 
 export default function Profile() {
   const { state, run, busy, notify } = useCampus();

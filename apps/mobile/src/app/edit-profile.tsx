@@ -2,10 +2,9 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { router } from 'expo-router';
 import { Button, Chip, Field, IconButton, Row, Screen, Txt } from '../components/ui';
-import { categories, Category } from '../domain/models';
+import { categories, Category, instituteNames, starterGroups } from '@unicore/shared';
 import { useCampus } from '../state/CampusProvider';
 import { campusRepository, isMockMode } from '../services';
-import { instituteNames, starterGroups } from '../domain/catalog';
 import { SearchSelect } from '../components/SearchSelect';
 
 export default function EditProfile() {

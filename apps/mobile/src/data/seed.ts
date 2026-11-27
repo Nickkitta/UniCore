@@ -1,5 +1,4 @@
-import { Snapshot } from '../domain/models';
-import { starterGroups } from '../domain/catalog';
+import { Snapshot, starterGroups } from '@unicore/shared';
 
 // Relative dates keep a fresh installation useful for demonstrations.
 export function createSeed(): Snapshot {

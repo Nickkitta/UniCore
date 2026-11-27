@@ -1,5 +1,5 @@
 import { ScrollView, TextInput, View } from 'react-native';
-import { categories, CategoryFilter } from '../domain/models';
+import { categories, CategoryFilter } from '@unicore/shared';
 import { useTheme } from '../theme';
 import { Chip, Icon, Row } from './ui';
 

@@ -1,4 +1,4 @@
-import type { GeoPoint } from '../domain/models';
+import type { GeoPoint } from '@unicore/shared';
 export type MapProps = {
   point: GeoPoint | null;
   editable?: boolean;

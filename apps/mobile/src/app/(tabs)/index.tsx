@@ -6,7 +6,7 @@ import { Logo } from '../../components/Logo';
 import { Discovery } from '../../components/Discovery';
 import { EmptyState, IconButton, Row, Screen, Txt } from '../../components/ui';
 import { filterActivities } from '../../domain/activity';
-import { CategoryFilter } from '../../domain/models';
+import { CategoryFilter } from '@unicore/shared';
 import { useCampus } from '../../state/CampusProvider';
 import { useTheme } from '../../theme';
 

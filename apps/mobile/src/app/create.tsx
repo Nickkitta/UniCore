@@ -4,9 +4,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Button, Chip, Field, IconButton, Row, Screen, Txt } from '../components/ui';
 import { EventMap } from '../components/EventMap';
-import { eventTags } from '../domain/catalog';
-import { categories, Category, GeoPoint, PhotoDraft } from '../domain/models';
-import { parseLocalDate, validateInvite } from '../domain/activity';
+import {
+  categories,
+  Category,
+  eventTags,
+  GeoPoint,
+  parseLocalDate,
+  PhotoDraft,
+  validateInvite,
+} from '@unicore/shared';
 import { campusRepository } from '../services';
 import { pickPhotos } from '../services/photos';
 import { useCampus } from '../state/CampusProvider';

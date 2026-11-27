@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, View } from 'react-native';
-import type { EventRoom } from '../domain/models';
+import type { EventRoom } from '@unicore/shared';
 import { campusRepository } from '../services';
 import { useCampus } from '../state/CampusProvider';
 import { Button, Field, IconButton, Row, Txt } from './ui';

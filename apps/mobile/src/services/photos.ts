@@ -1,6 +1,6 @@
 import * as ImagePicker from 'expo-image-picker';
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
-import type { PhotoDraft } from '../domain/models';
+import type { PhotoDraft } from '@unicore/shared';
 
 export async function pickPhotos(remaining: number): Promise<PhotoDraft[]> {
   if (remaining <= 0) return [];

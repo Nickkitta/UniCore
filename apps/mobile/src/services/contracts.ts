@@ -1,4 +1,4 @@
-import { EventRoom, InviteInput, Profile, Snapshot, ThemeId } from '../domain/models';
+import { EventRoom, InviteInput, Profile, Snapshot, ThemeId } from '@unicore/shared';
 
 // The UI uses the same contract for remote data and the explicit offline mock mode
 export interface CampusRepository {

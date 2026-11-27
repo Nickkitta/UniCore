@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { Pressable, View } from 'react-native';
-import { Activity } from '../domain/models';
+import { Activity } from '@unicore/shared';
 import { formatDate, formatTime, formatPrice, participantCount } from '../domain/activity';
 import { useCampus } from '../state/CampusProvider';
 import { campusRepository } from '../services';

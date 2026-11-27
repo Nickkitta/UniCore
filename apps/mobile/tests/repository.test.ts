@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 vi.mock('@react-native-async-storage/async-storage', () => ({ default: {} }));
 import { createMockRepository, isSnapshot } from '../src/services/mockRepository';
-import { filterActivities, parseLocalDate, validateInvite } from '../src/domain/activity';
+import { filterActivities } from '../src/domain/activity';
 import { createSeed } from '../src/data/seed';
-import { InviteInput } from '../src/domain/models';
+import { InviteInput } from '@unicore/shared';
 
 function memoryStorage() {
   let value: string | null = null;
@@ -88,19 +88,10 @@ describe('demo repository', () => {
     expect(updated.activities[0].host).toBe('Алексей');
   });
 });
-describe('discovery and validation', () => {
+describe('discovery', () => {
   it('combines category and case-insensitive text search', () => {
     const activities = createSeed().activities;
     expect(filterActivities(activities, 'Спорт', ' ВОЛЕЙБОЛ ')).toHaveLength(1);
     expect(filterActivities(activities, 'Учёба', 'ВОЛЕЙБОЛ')).toHaveLength(0);
-  });
-  it('rejects invalid calendar dates, times and past dates', () => {
-    expect(parseLocalDate('31.02.2027', '18:00')).toBeNull();
-    expect(parseLocalDate('12.12.2027', '24:00')).toBeNull();
-    expect(parseLocalDate('12.12.2027', '18:75')).toBeNull();
-    expect(parseLocalDate('12.12.2027', '18:00')).not.toBeNull();
-    expect(validateInvite({ ...input(), startsAt: '2020-01-01' })).toContain('будущем');
-    expect(validateInvite({ ...input(), capacity: 1 })).toContain('от 2 до 100');
-    expect(validateInvite(input())).toBeNull();
   });
 });

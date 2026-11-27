@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import type { ViewStyle } from 'react-native';
-import type { ThemeId } from './domain/models';
+import type { ThemeId } from '@unicore/shared';
 
 export type Palette = {
   bg: string;

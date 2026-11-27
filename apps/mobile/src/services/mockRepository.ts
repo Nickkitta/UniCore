@@ -1,8 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createSeed } from '../data/seed';
-import { participantCount, validateInvite } from '../domain/activity';
-import { categories, EventRoom, Snapshot } from '../domain/models';
-import { starterGroups } from '../domain/catalog';
+import { participantCount } from '../domain/activity';
+import { categories, EventRoom, Snapshot, starterGroups, validateInvite } from '@unicore/shared';
 import { CampusRepository } from './contracts';
 
 const KEY = 'unicore:demo:v1';

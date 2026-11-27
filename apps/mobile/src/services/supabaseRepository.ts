@@ -1,7 +1,12 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { decode } from 'base64-arraybuffer';
-import { validateInvite } from '../domain/activity';
-import type { EventRoom, Snapshot } from '../domain/models';
+import {
+  errorMessages,
+  networkErrorMessage,
+  unknownErrorMessage,
+  validateInvite,
+} from '@unicore/shared';
+import type { EventRoom, Snapshot } from '@unicore/shared';
 import type { CampusRepository } from './contracts';
 import { isSnapshot } from './mockRepository';
 
@@ -29,19 +34,9 @@ export function backendError(error: unknown): Error {
   const value = error as { code?: string; message?: string };
   const code = value?.code || '';
   const message = value?.message || '';
+  // UNICORE_* codes come from the shared table; the rest are Supabase Auth and PostgREST codes
   const known: Record<string, string> = {
-    UNICORE_PARTNER_JOIN: 'Партнёры организуют собственные встречи',
-    UNICORE_INVALID_GROUP: 'Выбери группу своего института',
-    UNICORE_INVALID_TAGS: 'Выбери до четырёх тегов из списка',
-    UNICORE_ROOM_DENIED: 'Чат доступен только организатору и участникам встречи',
-    UNICORE_AUTH_REQUIRED: 'Войди в аккаунт ещё раз',
-    UNICORE_PAST: 'Эта встреча уже началась',
-    UNICORE_FULL: 'Все места уже заняты',
-    UNICORE_NOT_FOUND: 'Встреча больше недоступна',
-    UNICORE_HOST: 'Ты организатор этой встречи',
-    UNICORE_PROFILE_REQUIRED: 'Обнови страницу и заполни профиль',
-    UNICORE_INVALID_PHOTOS: 'Не удалось прикрепить фотографии — выбери их заново',
-    UNICORE_ORGANIZATION_FORBIDDEN: 'Создавать события от сообщества может его организатор',
+    ...errorMessages,
     invalid_credentials: 'Неверная почта или пароль',
     'Invalid login credentials': 'Неверная почта или пароль',
     email_not_confirmed: 'Подтверди почту по ссылке в письме, затем войди',
@@ -67,9 +62,9 @@ export function backendError(error: unknown): Error {
     if (message.includes(key)) return new Error(text);
   }
   if (/network|fetch|connection|timeout/i.test(message)) {
-    return new Error('Не удалось связаться с сервером — проверь интернет и повтори');
+    return new Error(networkErrorMessage);
   }
-  return new Error('Не удалось выполнить действие — попробуй ещё раз');
+  return new Error(unknownErrorMessage);
 }
 
 export function createSupabaseRepository(client: SupabaseClient | null): CampusRepository {

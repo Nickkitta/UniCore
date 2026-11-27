@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, AppState, Pressable, StyleSheet, Text, View } from 'react-native';
-import { Snapshot } from '../domain/models';
+import { Snapshot } from '@unicore/shared';
 import { campusRepository, isMockMode } from '../services';
 import { supabase } from '../services/supabaseClient';
 import { checkConnection } from '../services/connection';
