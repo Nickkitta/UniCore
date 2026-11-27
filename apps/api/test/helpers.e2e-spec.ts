@@ -1,7 +1,8 @@
 import { eq } from 'drizzle-orm';
+import { verifyPassword } from '../src/auth/password.js';
 import { admins, profiles, users } from '../src/db/schema.js';
 import { createTestApp, type TestApp } from './app.js';
-import { createUser } from './users.js';
+import { createUser, testPassword } from './users.js';
 
 describe('test helpers', () => {
   let first: TestApp;
@@ -42,6 +43,18 @@ describe('test helpers', () => {
       accountKind: 'student',
       name: 'Студент',
     });
+  });
+
+  it('stores a real argon2id hash, computed once, and returns the password', async () => {
+    const [a, b] = [await createUser(first.db), await createUser(first.db)];
+    expect(a.password).toBe(testPassword);
+    const [hashA, hashB] = [
+      (await userRow(first, a.id))?.passwordHash,
+      (await userRow(first, b.id))?.passwordHash,
+    ];
+    expect(hashA?.startsWith('$argon2id$')).toBe(true);
+    expect(await verifyPassword(hashA ?? '', a.password)).toBe(true);
+    expect(hashB).toBe(hashA);
   });
 
   it('gives every user its own email and keeps a given one normalized', async () => {

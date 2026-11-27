@@ -10,7 +10,9 @@ import {
   type EventRoom,
   eventRoomSchema,
   fileQuerySchema,
+  emailSchema,
   idSchema,
+  normalizeEmail,
   partnerBadges,
   postMessageRequestSchema,
   profilePatchSchema,
@@ -41,6 +43,11 @@ describe('request schemas', () => {
       portal: 'student',
     });
     expect(body.email).toBe('test@example.com');
+  });
+
+  it('normalizes the email the same way as normalizeEmail, which the server uses', () => {
+    expect(normalizeEmail(' Test@Example.com ')).toBe('test@example.com');
+    expect(emailSchema.parse(' Test@Example.com ')).toBe(normalizeEmail(' Test@Example.com '));
   });
 
   it('rejects a malformed email and an unknown portal', () => {

@@ -210,6 +210,8 @@ flowchart TD
 
 В токене доступа нет ролей: права администратора проверяются по таблице `admins` на каждом запросе к `/v1/admin/*`, поэтому `admin:revoke` действует сразу. Пароли — argon2id (`@node-rs/argon2`) не слабее минимума OWASP: 19 МиБ памяти, 2 прохода, 1 поток. Для несуществующей почты сервер всё равно проверяет пароль против заранее вычисленного хеша, чтобы время ответа не выдавало, есть ли аккаунт.
 
+Почта хранится и ищется в виде `normalizeEmail` из `packages/shared` (trim и нижний регистр): на этой функции построена `emailSchema`, а сервис применяет её сам — для CLI и сидера, которые обходят схемы. Пароль короче `minPasswordLength` (8, тоже в `packages/shared`) сервис отклоняет кодом 422 `UNICORE_WEAK_PASSWORD`. Аккаунт и профиль пишутся одной транзакцией; хеш считается до неё. Занятую почту ловит `insert … on conflict (email) do nothing`: пустой результат — 409 `UNICORE_EMAIL_TAKEN`, поэтому две одновременные регистрации с одной почтой не создадут двух аккаунтов.
+
 ### Вход и обновление сессии
 
 ```mermaid
@@ -605,7 +607,8 @@ apps/api/
                         позже — @Public, @CurrentUser, @AdminOnly
     db/                 schema.ts; database.ts — открытие Postgres или PGlite, миграции при старте, тип Db;
                         database.module.ts — DatabaseModule поверх DrizzleModule из @nestjs/drizzle
-    auth/               контроллер, сервис, токены, пароли, подтверждение почты, guards
+    auth/               password.ts — argon2id и минимальная длина; users.service.ts — аккаунт с профилем одной транзакцией;
+                        позже — контроллер, токены, подтверждение почты, guards
     profile/
     activities/
     rooms/
@@ -618,7 +621,7 @@ apps/api/
     cli/                admin-grant.ts, admin-revoke.ts, photos-cleanup.ts
   seed/                 сидер и наборы (этап 6)
   drizzle/              сгенерированные SQL-миграции
-  test/                 e2e-тесты; app.ts — createTestApp, users.ts — createUser; authHeader — с 3.2
+  test/                 e2e-тесты; app.ts — createTestApp, users.ts — createUser (пароль testPassword); authHeader — с 3.2
   drizzle.config.ts
   nest-cli.json
   vitest.config.ts

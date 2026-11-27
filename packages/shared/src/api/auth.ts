@@ -4,6 +4,9 @@ import { emailSchema, textSchema } from './common.ts';
 
 // /v1/auth/*. The password length is checked by the server (UNICORE_WEAK_PASSWORD), not here.
 
+/** A shorter password at sign-up is UNICORE_WEAK_PASSWORD; counted like `string.length`. */
+export const minPasswordLength = 8;
+
 /** POST /v1/auth/sign-in. The portal is checked against the account: UNICORE_WRONG_PORTAL. */
 export const signInRequestSchema = z.object({
   email: emailSchema,

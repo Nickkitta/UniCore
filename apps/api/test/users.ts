@@ -1,4 +1,5 @@
-import type { AccountKind } from '@unicore/shared';
+import { type AccountKind, normalizeEmail } from '@unicore/shared';
+import { hashPassword } from '../src/auth/password.js';
 import type { Db } from '../src/db/database.js';
 import { admins, profiles, users } from '../src/db/schema.js';
 
@@ -21,21 +22,32 @@ export interface TestUser {
   id: string;
   email: string;
   kind: AccountKind;
+  /** The password of every test user, `testPassword`: for signing in. */
+  password: string;
 }
 
+/** Every test user has this password. */
+export const testPassword = 'test-password';
+
+let hashOnce: Promise<string> | undefined;
+
 /**
- * Not an argon2 hash, so no password signs in with it. Task 3.1 puts a real hash here
- * and returns the password with the user.
+ * A real argon2id hash made by the server's code, computed once per process: hashing is
+ * deliberately slow, and the tests create many users.
  */
-const passwordHash = '!test-user-without-password';
+function testPasswordHash() {
+  hashOnce ??= hashPassword(testPassword);
+  return hashOnce;
+}
 
 let emailCounter = 0;
 
 /** Creates a user with a profile straight in the database, in one transaction. */
 export async function createUser(db: Db, options: TestUserOptions = {}): Promise<TestUser> {
   const kind = options.kind ?? 'student';
-  const email = (options.email ?? `user-${++emailCounter}@example.test`).trim().toLowerCase();
+  const email = normalizeEmail(options.email ?? `user-${++emailCounter}@example.test`);
   const verified = options.verified ?? true;
+  const passwordHash = await testPasswordHash();
 
   const id = await db.transaction(async (tx) => {
     const [user] = await tx
@@ -53,5 +65,5 @@ export async function createUser(db: Db, options: TestUserOptions = {}): Promise
     return user.id;
   });
 
-  return { id, email, kind };
+  return { id, email, kind, password: testPassword };
 }

@@ -25,6 +25,7 @@
     "@nestjs/core": "^12.0.1",
     "@nestjs/drizzle": "0.0.2",
     "@nestjs/platform-express": "^12.0.1",
+    "@node-rs/argon2": "^2.2.2",
     "@unicore/shared": "*",
     "drizzle-orm": "1.0.0-rc.6",
     "nestjs-pino": "^5.3.2",
